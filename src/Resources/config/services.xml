@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services
+    https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="itlab_studio_api_client_service.api_client" class="ItlabStudio\ApiClient\Service\ApiClient"
+                 public="true">
+            <argument type="service" id="service_container"/>
+            <argument key="$controlPanelID">%env(JWT_CONTROL_PANEL_ID)%</argument>
+            <argument key="$controlPanelSecret">%env(JWT_CONTROL_PANEL_SECRET)%</argument>
+            <argument key="$expiresTime">%env(JWT_TOKEN_EXPIRES_TIME)%</argument>
+        </service>
+
+        <service id="itlab_studio_api_client_service.api_client_resources"
+                 class="ItlabStudio\ApiClient\CodeBase\ResourceInjector" public="true">
+            <argument type="service" id="itlab_studio_api_client_service.api_client"/>
+            <argument type="service" id="service_container"/>
+        </service>
+
+    </services>
+</container>

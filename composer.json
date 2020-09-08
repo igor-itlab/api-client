@@ -1,0 +1,42 @@
+{
+  "name": "itlab-studio/api-client",
+  "type": "library",
+  "description": "Library for api call with different resources",
+  "version": "1.0.0",
+  "keywords": ["api", "resource"],
+  "homepage": "https://itlab-studio.com/",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "ITLab-Studio Development",
+      "email": "igor-tolstoy@itlab-studio.com"
+    }
+  ],
+  "repositories": [
+    {
+      "type":"package",
+      "package": {
+        "name": "itlab-studio/api-client",
+        "version":"master",
+        "source": {
+          "url": "https://github.com/igor-itlab/api-client.git",
+          "type": "git",
+          "reference":"master"
+        }
+      }
+    }
+  ],
+  "require": {
+    "php": ">=7.4.*",
+    "ext-json": "*"
+  },
+  "autoload": {
+    "psr-4": { "ItlabStudio\\ApiClient\\": "src/" }
+  },
+  "extra": {
+    "symfony": {
+      "require": "^4.0 || ^5.0"
+    }
+  },
+  "minimum-stability": "dev"
+}

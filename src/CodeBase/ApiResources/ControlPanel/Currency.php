@@ -7,15 +7,13 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractApiResource;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiAuthorizationInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
-use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Class Currencies
  *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel
  */
-class CryptoCurrencies extends AbstractApiResource implements ApiAuthorizationInterface
+class Currency extends AbstractApiResource implements ApiAuthorizationInterface
 {
     protected $apiDomainName;
 
@@ -50,7 +48,7 @@ class CryptoCurrencies extends AbstractApiResource implements ApiAuthorizationIn
     public function getAll()
     {
         $this->method = 'GET';
-        $this->uri = 'private/rates';
+        $this->uri = 'private/currencies';
 
         return $this->request();
     }

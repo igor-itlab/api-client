@@ -6,9 +6,19 @@
 
     <services>
 
+        <service id="ItlabStudio\ApiClient\CodeBase\Callbacks\SignatureCallback">
+            <tag name="api_client.callback_observer" priority="1"/>
+        </service>
+
+        <service id="itlab_studio_api_client_service.callback_handler"
+                 class="ItlabStudio\ApiClient\Service\ApiResourceCallbackHandler" public="true">
+            <argument type="tagged_iterator" tag="api_client.callback_observer"></argument>
+        </service>
+
         <service id="itlab_studio_api_client_service.api_client" class="ItlabStudio\ApiClient\Service\ApiClient"
                  public="true">
             <argument type="service" id="service_container"/>
+            <argument type="service" id="itlab_studio_api_client_service.callback_handler"/>
             <argument key="$controlPanelID">%env(JWT_CONTROL_PANEL_ID)%</argument>
             <argument key="$controlPanelSecret">%env(JWT_CONTROL_PANEL_SECRET)%</argument>
         </service>

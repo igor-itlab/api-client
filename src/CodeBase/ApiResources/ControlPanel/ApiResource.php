@@ -11,7 +11,7 @@ use ItlabStudio\ApiClient\Service\EncryptionManager;
 /**
  * @property  string
  */
-class ApiResource extends AbstractApiResource  implements ApiAuthorizationInterface
+class ApiResource extends AbstractApiResource implements ApiAuthorizationInterface
 {
 
     /**
@@ -22,7 +22,6 @@ class ApiResource extends AbstractApiResource  implements ApiAuthorizationInterf
     {
         $this->client = $client;
         $this->apiDomainName = $_ENV['CP_CLIENT_DOMAIN_NAME'];
-        $client->setConnectionId($_ENV['CP_CLIENT_CONNECTION_ID']);
         parent::__construct($client);
     }
 

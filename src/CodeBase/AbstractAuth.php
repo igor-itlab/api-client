@@ -32,6 +32,9 @@ abstract class AbstractAuth
      */
     protected $publicTokenExpires;
 
+    /** @var string */
+    protected $apiDomainName;
+
     public function __construct(ApiClientInterface $client, $type)
     {
         $this->client = $client;

@@ -21,6 +21,9 @@ class Document extends ApiResource
         return $this->request();
     }
 
+    /**
+     * @return mixed|void
+     */
     public function getAll()
     {
         $this->auth(static::$TYPE_PRIVATE);
@@ -37,6 +40,7 @@ class Document extends ApiResource
      *       "callUrl"    => $callUrl,
      *   ]
      *
+     * @param array $body
      * @return mixed
      */
     public function verify(array $body = []){

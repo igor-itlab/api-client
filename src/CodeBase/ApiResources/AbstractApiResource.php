@@ -41,6 +41,9 @@ class AbstractApiResource implements ApiResourceInterface
     /** @var ApiClientInterface */
     protected $client;
 
+    /** @var array */
+    protected $filters = [];
+
     /**
      * AbstractApiResource constructor.
      * @param ApiClientInterface $client
@@ -75,6 +78,39 @@ class AbstractApiResource implements ApiResourceInterface
     }
 
     /**
+     * @param $key
+     * @param $value
+     * @return $this
+     */
+    public function setFilter($key, $value)
+    {
+        $this->filters[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param array $filters
+     * @return $this
+     */
+    public function setFilters(array $filters = [])
+    {
+        $this->filters = array_merge($this->filters, $filters);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetFilters()
+    {
+        $this->filters = [];
+
+        return $this;
+    }
+
+    /**
      * @param int $id
      */
     public function getById(int $id)
@@ -96,14 +132,17 @@ class AbstractApiResource implements ApiResourceInterface
     /**
      * @param array $options
      *
+     * @param array $callbacks
      * @return mixed
      */
-    protected function request(array $options = [])
+    protected function request(array $options = [], $callbacks = [])
     {
         return $this->client->request(
             $options,
             $this->method,
-            $this->getApiDomainName() . '/' . $this->getUriPrefix() . $this->getType() . '/' . $this->getURI()
+            $this->getApiDomainName() . '/' . $this->getUriPrefix() . $this->getType() . '/' . $this->getURI(),
+            $this->filters,
+            $callbacks
         );
     }
 }

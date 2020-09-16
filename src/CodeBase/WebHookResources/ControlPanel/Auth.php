@@ -24,7 +24,7 @@ class Auth extends AbstractAuth implements ApiAuthInterface
     /** @var string */
     protected $uri = 'auth/login';
 
-    public function __construct(ApiClientInterface $client) {
+    public function __construct(ApiClientInterface $client, $type) {
         parent::__construct($client);
     }
 

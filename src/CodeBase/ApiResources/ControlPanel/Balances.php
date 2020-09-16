@@ -26,10 +26,22 @@ class Balances extends ApiResource
      * @param string $currency
      * @return mixed|void
      */
-    public function getAll(string $currency)
+    public function getByCurrency(string $currency)
     {
         $this->auth(static::$TYPE_PRIVATE);
-        $this->uri = 'balances?currency=' . strtolower($currency);
+        $this->setFilter('currency', strtolower($currency));
+        $this->uri = 'balances';
+
+        return $this->request();
+    }
+
+    /**
+     * @return mixed|void
+     */
+    public function getAll()
+    {
+        $this->auth(static::$TYPE_PRIVATE);
+        $this->uri = 'balances';
 
         return $this->request();
     }
@@ -41,7 +53,8 @@ class Balances extends ApiResource
     public function getByAbbr(string $currency)
     {
         $this->auth(static::$TYPE_PRIVATE);
-        $this->uri = 'balances?currency.asset=' . strtolower($currency);
+        $this->setFilter('currency.asset', strtolower($currency));
+        $this->uri = 'balances';
 
         return $this->request();
     }

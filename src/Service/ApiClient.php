@@ -2,7 +2,7 @@
 
 namespace ItlabStudio\ApiClient\Service;
 
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Currency;
+use ItlabStudio\ApiClient\CodeBase\Exceptions\BadResponceException;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResourceInjectorInterface;
 use ItlabStudio\ApiClient\CodeBase\Exceptions\ResourceNotFoundException;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
@@ -12,6 +12,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\NativeHttpClient;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 
 /**
  * Class ApiClient
@@ -63,22 +64,31 @@ class ApiClient implements ApiClientInterface
     protected $tokenExpires;
 
     /**
+     * @var \ItlabStudio\ApiClient\Service\CallbackHandler
+     */
+    protected $callbackHandler;
+
+    /**
      * ApiClient constructor.
      * @param ContainerInterface $container
-     * @param $controlPanelID
-     * @param $controlPanelSecret
-     * @param $expiresTime
+     * @param string $controlPanelID
+     * @param string $controlPanelSecret
+     * @param \ItlabStudio\ApiClient\Service\ApiResourceCallbackHandler $callbackHandler
      */
     public function __construct(
         ContainerInterface $container,
+        ApiResourceCallbackHandler $callbackHandler,
         string $controlPanelID,
         string $controlPanelSecret
     ) {
         $this->container = $container;
         $this->clientId = $controlPanelID;
         $this->secretKey = $controlPanelSecret;
+        $this->callbackHandler = $callbackHandler;
 //        $this->handler = new NativeHttpClient();
         $this->handler = HttpClient::class;
+
+        $this->callbackHandler = $callbackHandler;
     }
 
     /**
@@ -181,19 +191,21 @@ class ApiClient implements ApiClientInterface
 
     /**
      * @param array $options
-     * @param        $method
+     * @param $method
      * @param string $uriAppend
      * @param array $queryParams
-     *
-     * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @param array $callbacks
+     * @return bool
      */
-    public function request(array $options, $method, $uriAppend = '', array $queryParams = [])
+    public function request(array $options, $method, $uriAppend = '', array $queryParams = [], $callbacks = [])
     {
         $options = array_merge($this->headers, $options);
+
+        if (count($callbacks)) {
+            foreach ($callbacks as $callback) {
+                $this->callbackHandler->attach($callback);
+            }
+        }
 
         //Add query params
         if ($queryParams) {
@@ -235,14 +247,19 @@ class ApiClient implements ApiClientInterface
 //                $options
 //            )->toArray();
 
-            return ($this->handler::create($options))->request(
+            $response = ($this->handler::create($options))->request(
                 $method,
-                $uriAppend,
-                $queryParams
+                $uriAppend
             )->toArray();
+
+            $this->callbackHandler->fire($this->resolvedResource, $response);
+
+            return $response;
         } catch (NotFoundHttpException $e) {
+        } catch (BadResponceException $e) {
+            return false;
+        } finally {
         }
-//        return $response;
     }
 
     /**

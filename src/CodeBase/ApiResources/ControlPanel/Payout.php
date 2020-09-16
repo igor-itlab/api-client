@@ -9,6 +9,10 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
  */
 class Payout extends ApiResource
 {
+    /**
+     * @param int $id
+     * @return mixed|void
+     */
     public function getById(int $id)
     {
         $this->auth(static::$TYPE_PRIVATE);
@@ -17,6 +21,9 @@ class Payout extends ApiResource
         return $this->request();
     }
 
+    /**
+     * @return mixed|void
+     */
     public function getAll()
     {
         $this->auth(static::$TYPE_PRIVATE);
@@ -66,7 +73,7 @@ class Payout extends ApiResource
                     base64_encode(
                         json_encode($body['attributes'])
                     ),
-                    $key
+                    $this->client->getSecretKey()
                 )
             ]
         );

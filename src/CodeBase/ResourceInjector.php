@@ -55,10 +55,10 @@ class ResourceInjector implements ResourceInjectorInterface
     }
 
     /** @return Auth */
-    public function CPAuth()
+    public function CPAuth($type)
     {
         /** @var Auth */
-        return new Auth($this->client);
+        return new Auth($this->client, $type);
     }
 
     /**

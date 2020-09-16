@@ -11,6 +11,8 @@ namespace ItlabStudio\ApiClient\CodeBase\Interfaces;
 interface ApiAuthorizationInterface
 {
 
-    public function auth();
+    function auth($type);
+
+    function getSignature($requestString, $key);
 
 }

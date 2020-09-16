@@ -20,15 +20,26 @@ class Auth extends AbstractAuth implements ApiAuthInterface
     protected static $API_CLIENT_TOKEN_NAME = "ITLAB_CP_API_CLIENT_TOKEN";
 
     /** @var string */
-    protected $apiDomainName = 'www.control-panel.com';
+    protected $apiDomainName;
+
+    protected $apiConnectionId;
 
     /**
      * Auth constructor.
      * @param ApiClientInterface $client
      */
-    public function __construct(ApiClientInterface $client)
+    public function __construct(ApiClientInterface $client, $type)
     {
-        parent::__construct($client);
+        $this->privateTokenExpires = (int)$_ENV['CP_PRIVATE_TOKEN_EXPIRES'];
+        $this->publicTokenExpires = (int)$_ENV['CP_PUBLIC_TOKEN_EXPIRES'];
+        $this->endpointType = $type;
+        parent::__construct($client, $type);
+
+        if ($type == ApiResource::$TYPE_PRIVATE) {
+            $this->generateToken();
+
+            return;
+        }
 
         $this->request();
     }

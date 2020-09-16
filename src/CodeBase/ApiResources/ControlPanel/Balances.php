@@ -4,50 +4,44 @@
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 
-use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractApiResource;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiAuthorizationInterface;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
-
 /**
  * Class Balances
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel
  */
-class Balances extends AbstractApiResource implements ApiAuthorizationInterface
+class Balances extends ApiResource
 {
-    protected $apiDomainName;
-
-    protected $uri;
-
     /**
-     * Currencies constructor.
-     *
-     * @param ApiClientInterface $client
-     */
-    public function __construct(ApiClientInterface $client)
-    {
-        $this->client = $client;
-        $this->auth();
-
-        $this->apiDomainName = $_ENV['CP_CLIENT_DOMAIN_NAME'];
-        parent::__construct($client);
-    }
-
-    /**
+     * @param int $id
      * @return mixed|void
      */
-    public function auth()
-    {
-        $this->client->CPAuth();
-    }
-
     public function getById(int $id)
     {
+        $this->auth(static::$TYPE_PRIVATE);
+        $this->uri = 'balances/' . $id;
+
+        return $this->request();
     }
 
-    public function getAll()
+    /**
+     * @param string $currency
+     * @return mixed|void
+     */
+    public function getAll(string $currency)
     {
-        $this->method = 'GET';
-        $this->uri = 'private/balances';
+        $this->auth(static::$TYPE_PRIVATE);
+        $this->uri = 'balances?currency=' . strtolower($currency);
+
+        return $this->request();
+    }
+
+    /**
+     * @param string $currency
+     * @return mixed
+     */
+    public function getByAbbr(string $currency)
+    {
+        $this->auth(static::$TYPE_PRIVATE);
+        $this->uri = 'balances?currency.asset=' . strtolower($currency);
 
         return $this->request();
     }

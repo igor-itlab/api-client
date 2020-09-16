@@ -28,8 +28,10 @@ It will add a new composer package and install bundle 'api-client'
 Add .env config (.env.local possible)
 
 ```yaml
+            CP_PRIVATE_TOKEN_EXPIRES=xxx
+            CP_PUBLIC_TOKEN_EXPIRES=xxx
             
-            JWT_TOKEN_EXPIRES_TIME=300
+            JWT_TOKEN_EXPIRES_TIME=xxx
             JWT_CONTROL_PANEL_ID='xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx'
             JWT_CONTROL_PANEL_SECRET='xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx'
             

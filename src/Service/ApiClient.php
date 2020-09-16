@@ -2,6 +2,7 @@
 
 namespace ItlabStudio\ApiClient\Service;
 
+use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Currency;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResourceInjectorInterface;
 use ItlabStudio\ApiClient\CodeBase\Exceptions\ResourceNotFoundException;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
@@ -15,6 +16,20 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * Class ApiClient
  *
+ * @method Payment
+ * @method Currency
+ * @method CPAuth
+ * @method AttributePrerequest
+ * @method Balances
+ * @method Document
+ * @method Exchanger
+ * @method Fee
+ * @method HistoryRate
+ * @method PaymentSystem
+ * @method Payout
+ * @method Rate
+ * @method Transfer
+ *
  * @package ItlabStudio\ApiClient\Service
  */
 class ApiClient implements ApiClientInterface
@@ -25,6 +40,9 @@ class ApiClient implements ApiClientInterface
 
     protected $clientId;
     protected $secretKey;
+    protected $connectionId;
+
+    protected $headers = [];
 
     protected $async = false;
 
@@ -54,15 +72,13 @@ class ApiClient implements ApiClientInterface
     public function __construct(
         ContainerInterface $container,
         string $controlPanelID,
-        string $controlPanelSecret,
-        int $expiresTime
+        string $controlPanelSecret
     ) {
         $this->container = $container;
         $this->clientId = $controlPanelID;
         $this->secretKey = $controlPanelSecret;
-        $this->tokenExpires = $expiresTime;
-        $this->handler = new NativeHttpClient();
-//        $this->handler = HttpClient::class;
+//        $this->handler = new NativeHttpClient();
+        $this->handler = HttpClient::class;
     }
 
     /**
@@ -74,7 +90,7 @@ class ApiClient implements ApiClientInterface
         $this->resourceInjector = $this->container->get('itlab_studio_api_client_service.api_client_resources');
 
         if ($this->resourceInjector->supports($method)) {
-            return $this->resourceInjector->{$method}($parameters);
+            return call_user_func_array([$this->resourceInjector, $method], $parameters);
         }
 
         if (!method_exists($this, $method)) {
@@ -177,14 +193,7 @@ class ApiClient implements ApiClientInterface
      */
     public function request(array $options, $method, $uriAppend = '', array $queryParams = [])
     {
-        if ($this->token) {
-            $options = [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'Authorization' => 'JWS-AUTH-TOKEN ' . $this->token
-                ]
-            ];
-        }
+        $options = array_merge($this->headers, $options);
 
         //Add query params
         if ($queryParams) {
@@ -220,21 +229,20 @@ class ApiClient implements ApiClientInterface
         }
 
         try {
-            $response = $this->handler->request(
-                $method,
-                $uriAppend,
-                $options
-            )->toArray();
-
-//            return ($this->handler::create($options))->request(
+//            $response = $this->handler->request(
 //                $method,
 //                $uriAppend,
-//                $queryParams
-//            );
+//                $options
+//            )->toArray();
+
+            return ($this->handler::create($options))->request(
+                $method,
+                $uriAppend,
+                $queryParams
+            )->toArray();
         } catch (NotFoundHttpException $e) {
         }
-
-        return $response;
+//        return $response;
     }
 
     /**
@@ -247,5 +255,32 @@ class ApiClient implements ApiClientInterface
         $this->resolvedResource = $resolvedResource;
 
         return $this;
+    }
+
+    /**
+     * @param string $connectionId
+     */
+    public function setConnectionId(string $connectionId): void
+    {
+        $this->connectionId = $connectionId;
+    }
+
+    /**
+     * @param $headers
+     * @return ApiClient
+     */
+    public function setHeaders($headers)
+    {
+        $this->headers = $headers;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
     }
 }

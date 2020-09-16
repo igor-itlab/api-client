@@ -14,8 +14,11 @@ use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
  */
 class AbstractApiResource implements ApiResourceInterface
 {
-    /** @var bool */
-    protected $authorizationRequire = false;
+    public static $TYPE_PRIVATE = 'private';
+    public static $TYPE_PUBLIC = 'public';
+
+    public static $METHOD_GET = 'GET';
+    public static $METHOD_POST = 'POST';
 
     /** @var string */
     protected $apiDomainName;
@@ -24,22 +27,35 @@ class AbstractApiResource implements ApiResourceInterface
     protected $uri;
 
     /** @var string */
-    protected $uriPreffix = 'api';
+    protected $uriPrefix = 'api/';
 
     /** @var string */
     protected $method = 'GET';
 
+    /** @var string */
+    protected $type = 'private';
+
     /** @var callable $callback */
     protected $callback;
-    /**
-     * @var ApiClientInterface
-     */
+
+    /** @var ApiClientInterface */
     protected $client;
 
+    /**
+     * AbstractApiResource constructor.
+     * @param ApiClientInterface $client
+     */
     public function __construct(ApiClientInterface $client)
     {
         $this->client = $client;
-        $this->client->setResolvedResource($this);
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
     }
 
     /**
@@ -58,6 +74,9 @@ class AbstractApiResource implements ApiResourceInterface
         return $this->apiDomainName;
     }
 
+    /**
+     * @param int $id
+     */
     public function getById(int $id)
     {
     }
@@ -69,9 +88,9 @@ class AbstractApiResource implements ApiResourceInterface
     /**
      * @return string
      */
-    public function getUriPreffix(): string
+    public function getUriPrefix(): string
     {
-        return $this->uriPreffix;
+        return $this->uriPrefix;
     }
 
     /**
@@ -84,7 +103,7 @@ class AbstractApiResource implements ApiResourceInterface
         return $this->client->request(
             $options,
             $this->method,
-            $this->getApiDomainName() . '/' . $this->getUriPreffix() . '/' . $this->getURI()
+            $this->getApiDomainName() . '/' . $this->getUriPrefix() . $this->getType() . '/' . $this->getURI()
         );
     }
 }

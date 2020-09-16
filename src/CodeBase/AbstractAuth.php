@@ -20,11 +20,51 @@ abstract class AbstractAuth
      */
     protected $cache;
 
-    public function __construct(ApiClientInterface $client)
+    /** @var string */
+    protected $endpointType;
+
+    /**
+     * @var mixed
+     */
+    protected $privateTokenExpires;
+    /**
+     * @var mixed
+     */
+    protected $publicTokenExpires;
+
+    public function __construct(ApiClientInterface $client, $type)
     {
         $this->client = $client;
         $this->cache = new FilesystemAdapter('api_client_JWT_token');
         $this->client->setResolvedResource($this);
+    }
+
+    public function generateToken()
+    {
+        /** @var CacheItemInterface $tokenItem */
+        $tokenItem = $this->cache->getItem(static::$API_CLIENT_TOKEN_NAME . $this->endpointType);
+
+        if (!$tokenItem->isHit()) {
+            $token = EncryptionManager::encodeSecretKey(
+                $this->client->getClientId(),
+                $this->client->getSecretKey(),
+                $this->privateTokenExpires
+            );
+//            $tokenItem->expiresAfter($this->client->getTokenExpires());
+            $tokenItem->expiresAfter($this->privateTokenExpires);
+            $tokenItem->set($token);
+            $this->cache->save($tokenItem);
+        }
+
+        $this->client->setToken($tokenItem->get());
+        $this->client->setHeaders(
+            [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'JWS-AUTH-TOKEN ' . $tokenItem->get()
+                ]
+            ]
+        );
     }
 
     /**
@@ -35,19 +75,31 @@ abstract class AbstractAuth
     public function request(array $options = [])
     {
         /** @var CacheItemInterface $tokenItem */
-        $tokenItem = $this->cache->getItem(static::$API_CLIENT_TOKEN_NAME);
+        $tokenItem = $this->cache->getItem(static::$API_CLIENT_TOKEN_NAME . $this->endpointType);
 
         if (!$tokenItem->isHit()) {
-            $token = EncryptionManager::encodeSecretKey(
-                $this->client->getClientId(),
-                $this->client->getSecretKey(),
-                $this->client->getTokenExpires()
-            );
-            $tokenItem->expiresAfter($this->client->getTokenExpires());
+//            $token = EncryptionManager::encodeSecretKey(
+//                $this->client->getClientId(),
+//                $this->client->getSecretKey(),
+//                $this->publicTokenExpires
+//            );
+
+            /** @TODO  Make request for token */
+            $token = $this->request();
+//            $tokenItem->expiresAfter($this->client->getTokenExpires());
+            $tokenItem->expiresAfter($this->publicTokenExpires);
             $tokenItem->set($token);
             $this->cache->save($tokenItem);
         }
 
         $this->client->setToken($tokenItem->get());
+        $this->client->setHeaders(
+            [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $tokenItem->get()
+                ]
+            ]
+        );
     }
 }

@@ -4,46 +4,31 @@
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 
-use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractApiResource;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiAuthorizationInterface;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
-
 /**
  * Class Rate
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel
  */
-class Rate extends AbstractApiResource implements ApiAuthorizationInterface
+class Rate extends ApiResource
 {
     /**
-     * Currencies constructor.
-     *
-     * @param ApiClientInterface $client
+     * @param int $id
+     * @return mixed|void
      */
-    public function __construct(ApiClientInterface $client)
+    public function getById(int $id)
     {
-        $this->client = $client;
-        $this->auth();
+        $this->auth(static::$TYPE_PRIVATE);
+        $this->uri = 'rates/' . $id;
 
-        $this->apiDomainName = $_ENV['CP_CLIENT_DOMAIN_NAME'];
-        parent::__construct($client);
+        return $this->request();
     }
 
     /**
      * @return mixed|void
      */
-    public function auth()
-    {
-        $this->client->CPAuth();
-    }
-
-    public function getById(int $id)
-    {
-    }
-
     public function getAll()
     {
-        $this->method = 'GET';
-        $this->uri = 'private/rates';
+        $this->auth(static::$TYPE_PRIVATE);
+        $this->uri = 'rates';
 
         return $this->request();
     }

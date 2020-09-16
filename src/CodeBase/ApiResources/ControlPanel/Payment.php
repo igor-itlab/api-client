@@ -4,47 +4,79 @@
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 
-use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractApiResource;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiAuthorizationInterface;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
-
 /**
  * Class Payment
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel
  */
-class Payment extends AbstractApiResource implements ApiAuthorizationInterface
+class Payment extends ApiResource
 {
     /**
-     * Currencies constructor.
-     *
-     * @param ApiClientInterface $client
+     * @param int $id
+     * @return mixed|void
      */
-    public function __construct(ApiClientInterface $client)
+    public function getById(int $id)
     {
-        $this->client = $client;
-        $this->auth();
+        $this->auth(static::$TYPE_PRIVATE);
+        $this->uri = 'payments/' . $id;
 
-        $this->apiDomainName = $_ENV['CP_CLIENT_DOMAIN_NAME'];
-        parent::__construct($client);
+        return $this->request();
     }
 
     /**
      * @return mixed|void
      */
-    public function auth()
-    {
-        $this->client->CPAuth();
-    }
-
-    public function getById(int $id)
-    {
-    }
-
     public function getAll()
     {
-        $this->method = 'GET';
-        $this->uri = 'private/payments';
+        $this->auth(static::$TYPE_PRIVATE);
+        $this->uri = 'payments';
 
         return $this->request();
+    }
+
+    /**
+     * [
+     *  'paymentSystem' => $paymentSystem,
+     *  'amount'        => $amount,
+     *  'currency'      => $currency,
+     *  'referenceId'   => $referenceId,
+     *  'connection'    => $connection,
+     *  'returnUrl'     => $returnUrl,
+     *  'attributes'    => $attributes,
+     *  'callUrl'       => $callUrl
+     * ]
+     * @param array $body
+     * @return mixed
+     */
+    public function setInvoice(array $body = [])
+    {
+        $this->auth(static::$TYPE_PRIVATE);
+        $this->method = static::$METHOD_POST;
+        $this->uri = 'payments';
+
+        return $this->request(
+            ['json' => $this->withSignature($body)]
+        );
+    }
+
+    /**
+     * @param $body
+     * @return array
+     */
+    protected function withSignature($body)
+    {
+        return array_merge(
+            $body,
+            [
+                'signature' => $this->getSignature(
+                    $body['paymentSystem'] . ':' . $body['amount']
+                    . ':' . $body['currency'] . ':' . $body['referenceId']
+                    . ':' . $body['connection'] . ':' .
+                    base64_encode(
+                        json_encode($body['attributes'])
+                    ),
+                    $key
+                )
+            ]
+        );
     }
 }

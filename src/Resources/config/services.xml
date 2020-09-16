@@ -11,7 +11,6 @@
             <argument type="service" id="service_container"/>
             <argument key="$controlPanelID">%env(JWT_CONTROL_PANEL_ID)%</argument>
             <argument key="$controlPanelSecret">%env(JWT_CONTROL_PANEL_SECRET)%</argument>
-            <argument key="$expiresTime">%env(JWT_TOKEN_EXPIRES_TIME)%</argument>
         </service>
 
         <service id="itlab_studio_api_client_service.api_client_resources"

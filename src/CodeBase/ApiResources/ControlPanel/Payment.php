@@ -74,7 +74,7 @@ class Payment extends ApiResource
                     base64_encode(
                         json_encode($body['attributes'])
                     ),
-                    $key
+                    $this->client->getSecretKey()
                 )
             ]
         );

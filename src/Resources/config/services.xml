@@ -6,6 +6,13 @@
 
     <services>
 
+        <service id="api_client.control_panel_resource_injector"
+                class="ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\ControlPanelResourceInjector" public="true">
+            <tag name="api_client.resource_injector" />
+            <argument type="service" id="itlab_studio_api_client_service.api_client"/>
+            <argument type="service" id="service_container"/>
+        </service>
+
         <service id="ItlabStudio\ApiClient\CodeBase\Callbacks\SignatureCallback">
             <tag name="api_client.callback_observer" priority="1"/>
         </service>
@@ -23,11 +30,11 @@
             <argument key="$controlPanelSecret">%env(JWT_CONTROL_PANEL_SECRET)%</argument>
         </service>
 
-        <service id="itlab_studio_api_client_service.api_client_resources"
-                 class="ItlabStudio\ApiClient\CodeBase\ResourceInjector" public="true">
-            <argument type="service" id="itlab_studio_api_client_service.api_client"/>
-            <argument type="service" id="service_container"/>
-        </service>
+<!--        <service id="itlab_studio_api_client_service.api_client_resources"-->
+<!--                 class="ItlabStudio\ApiClient\CodeBase\ResourceInjector" public="true">-->
+<!--            <argument type="service" id="itlab_studio_api_client_service.api_client"/>-->
+<!--            <argument type="service" id="service_container"/>-->
+<!--        </service>-->
 
     </services>
 </container>

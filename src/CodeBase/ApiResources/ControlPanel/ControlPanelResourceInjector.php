@@ -1,23 +1,23 @@
 <?php
 
-namespace ItlabStudio\ApiClient\CodeBase;
+namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\{AttributePrerequest,
-    Auth,
-    Balances,
-    Currency,
-    Document,
-    Exchanger,
-    Fee,
-    HistoryRate,
-    Payment,
-    PaymentSystem,
-    Payout,
-    Rate,
-    Service,
-    Transfer,
-    Connection
-};
+//use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\{AttributePrerequest,
+//    Auth,
+//    Balances,
+//    Currency,
+//    Document,
+//    Exchanger,
+//    Fee,
+//    HistoryRate,
+//    Payment,
+//    PaymentSystem,
+//    Payout,
+//    Rate,
+//    Service,
+//    Transfer,
+//    Connection
+//};
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResourceInjectorInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -27,7 +27,7 @@ use Symfony\Component\DependencyInjection\Container;
  *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources
  */
-class ResourceInjector implements ResourceInjectorInterface
+class ControlPanelResourceInjector implements ResourceInjectorInterface
 {
 
     /**

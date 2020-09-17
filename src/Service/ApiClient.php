@@ -8,6 +8,7 @@ use ItlabStudio\ApiClient\CodeBase\Exceptions\ResourceNotFoundException;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
 use Psr\Http\Message\RequestInterface;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\NativeHttpClient;
@@ -87,7 +88,6 @@ class ApiClient implements ApiClientInterface
         $this->callbackHandler = $callbackHandler;
 //        $this->handler = new NativeHttpClient();
         $this->handler = HttpClient::class;
-
         $this->callbackHandler = $callbackHandler;
     }
 
@@ -97,7 +97,9 @@ class ApiClient implements ApiClientInterface
      */
     public function __call($method, $parameters)
     {
-        $this->resourceInjector = $this->container->get('itlab_studio_api_client_service.api_client_resources');
+        $this->resourceInjector = $this->container->get(
+            'api_client.' . Container::underscore($method) . '_resource_injector'
+        );
 
         if ($this->resourceInjector->supports($method)) {
             return call_user_func_array([$this->resourceInjector, $method], $parameters);

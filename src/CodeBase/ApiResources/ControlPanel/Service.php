@@ -1,17 +1,14 @@
 <?php
 
+
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 /**
- * Class Currencies
- *
+ * Class Service
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel
  */
-class Currency extends ApiResource
+class Service extends ApiResource
 {
-    static $CURRENCY_TYPE_CRYPTO = 'CRYPTO';
-    static $CURRENCY_TYPE_FIAT = 'CURRENCY';
-    
     /**
      * @param int $id
      * @return mixed|void
@@ -19,7 +16,7 @@ class Currency extends ApiResource
     public function getById(int $id)
     {
         $this->auth(static::$TYPE_PRIVATE);
-        $this->uri = 'currencies/' . $id;
+        $this->uri = 'services/' . $id;
 
         return $this->request();
     }
@@ -30,7 +27,7 @@ class Currency extends ApiResource
     public function getAll()
     {
         $this->auth(static::$TYPE_PRIVATE);
-        $this->uri = 'currencies';
+        $this->uri = 'services';
 
         return $this->request();
     }

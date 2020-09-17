@@ -2,19 +2,22 @@
 
 namespace ItlabStudio\ApiClient\CodeBase;
 
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\AttributePrerequest;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Auth;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Balances;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Currency;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Document;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Exchanger;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Fee;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\HistoryRate;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Payment;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\PaymentSystem;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Payout;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Rate;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Transfer;
+use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\{AttributePrerequest,
+    Auth,
+    Balances,
+    Currency,
+    Document,
+    Exchanger,
+    Fee,
+    HistoryRate,
+    Payment,
+    PaymentSystem,
+    Payout,
+    Rate,
+    Service,
+    Transfer,
+    Connection
+};
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResourceInjectorInterface;
 use Symfony\Component\DependencyInjection\Container;
@@ -167,5 +170,23 @@ class ResourceInjector implements ResourceInjectorInterface
     {
         /** @var Transfer */
         return new Transfer($this->client);
+    }
+
+    /**
+     * @return Connection
+     */
+    public function Connection()
+    {
+        /** @var Connection */
+        return new Connection($this->client);
+    }
+
+    /**
+     * @return Service
+     */
+    public function Service()
+    {
+        /** @var Service */
+        return new Service($this->client);
     }
 }

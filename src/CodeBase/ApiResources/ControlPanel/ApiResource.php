@@ -47,7 +47,7 @@ class ApiResource extends AbstractApiResource implements ApiAuthorizationInterfa
     {
         return EncryptionManager::encodeSignature(
             $requestString,
-            $this->client->getResourceInjector->Auth(static::$TYPE_PRIVATE)->getSecretKey()
+            $this->client->getResourceInjector()->Auth(static::$TYPE_PRIVATE)->getSecretKey()
         );
     }
 }

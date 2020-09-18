@@ -44,15 +44,40 @@ Then please add some variables into services.yaml
 ```yaml
 services:
     # default configuration for services in *this* file
-    _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-        bind:
-            $controlPanelID: '%env(JWT_CONTROL_PANEL_ID)%'
-            $controlPanelSecret: '%env(JWT_CONTROL_PANEL_SECRET)%'
-            $expiresTime: '%env(JWT_TOKEN_EXPIRES_TIME)%'
-  
+
     #this record is temporary but require
     ItlabStudio\ApiClient\Service\ApiClient: '@itlab_studio_api_client_service.api_client'
+
+```
+
+Work with filters
+
+```php
+
+
+    $this->apiClient->ControlPanel()->Currency()
+        ->setFilter('type', Currency::$TYPE_CRYPTO)->getAll(); 
+
+```
+
+Work with closures
+
+```php
+    $this->apiClient->ControlPanel()->Currency()->pushCallbacks([function(){
+            
+            echo count($this->response);
+
+            $this->apiResource->resetFilters();
+
+            return $this->response;
+
+        }])->getAll();
+```
+
+Work with defined callbacks
+
+```php
+
+    $this->apiClient->ControlPanel()->Currency()->pushCallbacks([new SignatureCallback()])->getAll();
 
 ```

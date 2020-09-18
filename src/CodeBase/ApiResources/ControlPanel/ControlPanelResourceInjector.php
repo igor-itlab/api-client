@@ -2,25 +2,9 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
-//use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\{AttributePrerequest,
-//    Auth,
-//    Balances,
-//    Currency,
-//    Document,
-//    Exchanger,
-//    Fee,
-//    HistoryRate,
-//    Payment,
-//    PaymentSystem,
-//    Payout,
-//    Rate,
-//    Service,
-//    Transfer,
-//    Connection
-//};
+
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResourceInjectorInterface;
-use Symfony\Component\DependencyInjection\Container;
 
 /**
  * Class ResourceInjector
@@ -37,14 +21,26 @@ class ControlPanelResourceInjector implements ResourceInjectorInterface
 
     protected $handler;
     /**
-     * @var Container
+     * @var string
      */
-    protected $container;
+    protected $clientId;
+    /**
+     * @var string
+     */
+    protected $secretKey;
 
-    public function __construct(ApiClientInterface $client, Container $container)
-    {
-        $this->client = $client;
-        $this->container = $container;
+    public function __construct(
+        ApiClientInterface $client,
+        string $controlPanelID,
+        string $controlPanelSecret,
+        $privateTokenExpires,
+        $publicTokenExpires
+    ) {
+        $this->client              = $client;
+        $this->clientId            = $controlPanelID;
+        $this->secretKey           = $controlPanelSecret;
+        $this->privateTokenExpires = (int)$privateTokenExpires;
+        $this->publicTokenExpires  = (int)$publicTokenExpires;
     }
 
     /**
@@ -58,10 +54,17 @@ class ControlPanelResourceInjector implements ResourceInjectorInterface
     }
 
     /** @return Auth */
-    public function CPAuth($type)
+    public function Auth($type)
     {
         /** @var Auth */
-        return new Auth($this->client, $type);
+        return new Auth(
+            $this->client,
+            $type,
+            $this->clientId,
+            $this->secretKey,
+            $this->privateTokenExpires,
+            $this->publicTokenExpires
+        );
     }
 
     /**
@@ -188,5 +191,45 @@ class ControlPanelResourceInjector implements ResourceInjectorInterface
     {
         /** @var Service */
         return new Service($this->client);
+    }
+
+    /**
+     * @return string
+     */
+    protected function getClientId(): string
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * @param string $clientId
+     *
+     * @return ControlPanelResourceInjector
+     */
+    protected function setClientId(string $clientId): ControlPanelResourceInjector
+    {
+        $this->clientId = $clientId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getSecretKey(): string
+    {
+        return $this->secretKey;
+    }
+
+    /**
+     * @param string $secretKey
+     *
+     * @return ControlPanelResourceInjector
+     */
+    protected function setSecretKey(string $secretKey): ControlPanelResourceInjector
+    {
+        $this->secretKey = $secretKey;
+
+        return $this;
     }
 }

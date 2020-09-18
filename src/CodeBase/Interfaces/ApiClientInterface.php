@@ -10,10 +10,6 @@ namespace ItlabStudio\ApiClient\CodeBase\Interfaces;
  */
 interface ApiClientInterface
 {
-    /**
-     * @return string|null
-     */
-    public function getToken(): ?string;
 
     /**
      * @param array $options

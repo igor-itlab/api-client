@@ -9,6 +9,11 @@ use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use Psr\Cache\CacheItemInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
+/**
+ * Class AbstractAuth
+ *
+ * @package ItlabStudio\ApiClient\CodeBase
+ */
 abstract class AbstractAuth
 {
     /**
@@ -35,11 +40,17 @@ abstract class AbstractAuth
     /** @var string */
     protected $apiDomainName;
 
+    /**
+     * AbstractAuth constructor.
+     *
+     * @param ApiClientInterface $client
+     * @param                    $type
+     */
     public function __construct(ApiClientInterface $client, $type)
     {
+        $this->type   = $type;
         $this->client = $client;
-        $this->cache = new FilesystemAdapter('api_client_JWT_token');
-        $this->client->setResolvedResource($this);
+        $this->cache  = new FilesystemAdapter('api_client_JWT_token');
     }
 
     public function generateToken()
@@ -49,25 +60,47 @@ abstract class AbstractAuth
 
         if (!$tokenItem->isHit()) {
             $token = EncryptionManager::encodeSecretKey(
-                $this->client->getClientId(),
-                $this->client->getSecretKey(),
-                $this->privateTokenExpires
+                $this->getClientId(),
+                $this->getSecretKey(),
+                $this->getPrivateTokenExpires()
             );
-//            $tokenItem->expiresAfter($this->client->getTokenExpires());
-            $tokenItem->expiresAfter($this->privateTokenExpires);
+            $tokenItem->expiresAfter($this->getPrivateTokenExpires());
             $tokenItem->set($token);
             $this->cache->save($tokenItem);
         }
 
-        $this->client->setToken($tokenItem->get());
         $this->client->setHeaders(
             [
                 'headers' => [
                     'Content-Type'  => 'application/json',
-                    'Authorization' => 'JWS-AUTH-TOKEN ' . $tokenItem->get()
-                ]
+                    'Authorization' => 'JWS-AUTH-TOKEN ' . $tokenItem->get(),
+                ],
             ]
         );
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSecretKey()
+    {
+        return $this->secretKey;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrivateTokenExpires()
+    {
+        return $this->privateTokenExpires;
     }
 
     /**
@@ -89,20 +122,26 @@ abstract class AbstractAuth
 
             /** @TODO  Make request for token */
             $token = $this->request();
-//            $tokenItem->expiresAfter($this->client->getTokenExpires());
-            $tokenItem->expiresAfter($this->publicTokenExpires);
+            $tokenItem->expiresAfter($this->getPublicTokenExpires());
             $tokenItem->set($token);
             $this->cache->save($tokenItem);
         }
 
-        $this->client->setToken($tokenItem->get());
         $this->client->setHeaders(
             [
                 'headers' => [
                     'Content-Type'  => 'application/json',
-                    'Authorization' => 'Bearer ' . $tokenItem->get()
-                ]
+                    'Authorization' => 'Bearer ' . $tokenItem->get(),
+                ],
             ]
         );
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPublicTokenExpires()
+    {
+        return $this->publicTokenExpires;
     }
 }

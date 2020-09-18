@@ -16,35 +16,38 @@ class ApiResource extends AbstractApiResource implements ApiAuthorizationInterfa
 
     /**
      * ApiResource constructor.
+     *
      * @param ApiClientInterface $client
      */
     public function __construct(ApiClientInterface $client)
     {
-        $this->client = $client;
+        $this->client        = $client;
         $this->apiDomainName = $_ENV['CP_CLIENT_DOMAIN_NAME'];
         parent::__construct($client);
     }
 
     /**
      * @param $type
+     *
      * @return mixed|void
      */
     public function auth($type)
     {
-        $this->client->CPAuth($type);
+        $this->client->getResourceInjector()->Auth($type)->doAuth();
         $this->client->setResolvedResource($this);
     }
 
     /**
      * @param $requestString
      * @param $key
+     *
      * @return mixed
      */
     public function getSignature($requestString, $key)
     {
         return EncryptionManager::encodeSignature(
             $requestString,
-            $key
+            $this->client->getResourceInjector->Auth(static::$TYPE_PRIVATE)->getSecretKey()
         );
     }
 }

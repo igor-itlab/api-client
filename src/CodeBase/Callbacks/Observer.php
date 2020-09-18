@@ -23,9 +23,17 @@ abstract class Observer implements CallbackObserverInterface
     function fire(ApiResourceInterface $subject, $response)
     {
 //        if ($subject === $this->observable) {
-            $this->goal($subject, $response);
+            return $this->goal($subject, $response);
 //        }
+
+//        return $response;
     }
 
+    /**
+     * @param ApiResourceInterface $observable
+     * @param                      $response
+     *
+     * @return mixed $response
+     */
     abstract function goal(ApiResourceInterface $observable, $response);
 }

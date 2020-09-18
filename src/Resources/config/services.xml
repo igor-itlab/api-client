@@ -7,10 +7,14 @@
     <services>
 
         <service id="api_client.control_panel_resource_injector"
-                class="ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\ControlPanelResourceInjector" public="true">
-            <tag name="api_client.resource_injector" />
+                 class="ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\ControlPanelResourceInjector"
+                 public="true">
+            <tag name="api_client.resource_injector"/>
             <argument type="service" id="itlab_studio_api_client_service.api_client"/>
-            <argument type="service" id="service_container"/>
+            <argument key="$controlPanelID">%env(JWT_CONTROL_PANEL_ID)%</argument>
+            <argument key="$controlPanelSecret">%env(JWT_CONTROL_PANEL_SECRET)%</argument>
+            <argument key="$privateTokenExpires">%env(CP_PRIVATE_TOKEN_EXPIRES)%</argument>
+            <argument key="$publicTokenExpires">%env(CP_PUBLIC_TOKEN_EXPIRES)%</argument>
         </service>
 
         <service id="ItlabStudio\ApiClient\CodeBase\Callbacks\SignatureCallback">
@@ -26,15 +30,7 @@
                  public="true">
             <argument type="service" id="service_container"/>
             <argument type="service" id="itlab_studio_api_client_service.callback_handler"/>
-            <argument key="$controlPanelID">%env(JWT_CONTROL_PANEL_ID)%</argument>
-            <argument key="$controlPanelSecret">%env(JWT_CONTROL_PANEL_SECRET)%</argument>
         </service>
-
-<!--        <service id="itlab_studio_api_client_service.api_client_resources"-->
-<!--                 class="ItlabStudio\ApiClient\CodeBase\ResourceInjector" public="true">-->
-<!--            <argument type="service" id="itlab_studio_api_client_service.api_client"/>-->
-<!--            <argument type="service" id="service_container"/>-->
-<!--        </service>-->
 
     </services>
 </container>

@@ -4,6 +4,8 @@
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
 
@@ -15,9 +17,9 @@ use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
 class AbstractApiResource implements ApiResourceInterface
 {
     public static $TYPE_PRIVATE = 'private';
-    public static $TYPE_PUBLIC = 'public';
+    public static $TYPE_PUBLIC  = 'public';
 
-    public static $METHOD_GET = 'GET';
+    public static $METHOD_GET  = 'GET';
     public static $METHOD_POST = 'POST';
 
     /** @var string */
@@ -35,8 +37,8 @@ class AbstractApiResource implements ApiResourceInterface
     /** @var string */
     protected $type = 'private';
 
-    /** @var callable $callback */
-    protected $callback;
+    /** @var array $callbacks */
+    protected $callbacks = [];
 
     /** @var ApiClientInterface */
     protected $client;
@@ -46,6 +48,7 @@ class AbstractApiResource implements ApiResourceInterface
 
     /**
      * AbstractApiResource constructor.
+     *
      * @param ApiClientInterface $client
      */
     public function __construct(ApiClientInterface $client)
@@ -54,32 +57,9 @@ class AbstractApiResource implements ApiResourceInterface
     }
 
     /**
-     * @return string
-     */
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getURI()
-    {
-        return $this->uri;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getApiDomainName()
-    {
-        return $this->apiDomainName;
-    }
-
-    /**
      * @param $key
      * @param $value
+     *
      * @return $this
      */
     public function setFilter($key, $value)
@@ -91,6 +71,7 @@ class AbstractApiResource implements ApiResourceInterface
 
     /**
      * @param array $filters
+     *
      * @return $this
      */
     public function setFilters(array $filters = [])
@@ -111,6 +92,18 @@ class AbstractApiResource implements ApiResourceInterface
     }
 
     /**
+     * @param array $callbacks
+     *
+     * @return $this
+     */
+    public function pushCallbacks(array $callbacks)
+    {
+        $this->callbacks = array_merge($this->callbacks, $callbacks);
+
+        return $this;
+    }
+
+    /**
      * @param int $id
      */
     public function getById(int $id)
@@ -122,6 +115,32 @@ class AbstractApiResource implements ApiResourceInterface
     }
 
     /**
+     * @param array $options
+     *
+     * @param array $callbacks
+     *
+     * @return mixed
+     */
+    protected function request(array $options = [])
+    {
+        return $this->client->request(
+            $options,
+            $this->method,
+            $this->getApiDomainName() . '/' . $this->getUriPrefix() . $this->getType() . '/' . $this->getURI(),
+            $this->filters,
+            $this->callbacks
+        );
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getApiDomainName()
+    {
+        return $this->apiDomainName;
+    }
+
+    /**
      * @return string
      */
     public function getUriPrefix(): string
@@ -130,19 +149,18 @@ class AbstractApiResource implements ApiResourceInterface
     }
 
     /**
-     * @param array $options
-     *
-     * @param array $callbacks
-     * @return mixed
+     * @return string
      */
-    protected function request(array $options = [], $callbacks = [])
+    public function getType(): string
     {
-        return $this->client->request(
-            $options,
-            $this->method,
-            $this->getApiDomainName() . '/' . $this->getUriPrefix() . $this->getType() . '/' . $this->getURI(),
-            $this->filters,
-            $callbacks
-        );
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getURI()
+    {
+        return $this->uri;
     }
 }

@@ -21,18 +21,37 @@ class Auth extends AbstractAuth implements ApiAuthInterface
 
     /**
      * Auth constructor.
+     *
      * @param ApiClientInterface $client
-     * @param $type
+     * @param                    $type
+     * @param                    $clientId
+     * @param                    $secretKey
+     * @param                    $privateTokenExpires
+     * @param                    $publicTokenExpires
      */
-    public function __construct(ApiClientInterface $client, $type)
-    {
-        $this->privateTokenExpires = (int)$_ENV['CP_PRIVATE_TOKEN_EXPIRES'];
-        $this->publicTokenExpires = (int)$_ENV['CP_PUBLIC_TOKEN_EXPIRES'];
-        $this->apiDomainName = $_ENV['CP_CLIENT_DOMAIN_NAME'];
-        $this->endpointType = $type;
-        parent::__construct($client, $type);
+    public function __construct(
+        ApiClientInterface $client,
+        $type,
+        $clientId,
+        $secretKey,
+        $privateTokenExpires,
+        $publicTokenExpires
+    ) {
+        $this->apiDomainName       = $_ENV['CP_CLIENT_DOMAIN_NAME'];
+        $this->endpointType        = $type;
+        $this->clientId            = $clientId;
+        $this->secretKey           = $secretKey;
+        $this->privateTokenExpires = $privateTokenExpires;
+        $this->publicTokenExpires  = $publicTokenExpires;
 
-        if ($type === ApiResource::$TYPE_PRIVATE) {
+        parent::__construct($client, $type);
+    }
+
+    public function doAuth()
+    {
+        $this->client->setResolvedResource($this);
+
+        if ($this->type === ApiResource::$TYPE_PRIVATE) {
             $this->generateToken();
 
             return;

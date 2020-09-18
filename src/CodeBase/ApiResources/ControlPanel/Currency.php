@@ -9,8 +9,8 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
  */
 class Currency extends ApiResource
 {
-    static $CURRENCY_TYPE_CRYPTO = 'CRYPTO';
-    static $CURRENCY_TYPE_FIAT = 'CURRENCY';
+    static $TYPE_CRYPTO = 'CRYPTO';
+    static $TYPE_FIAT = 'CURRENCY';
     
     /**
      * @param int $id

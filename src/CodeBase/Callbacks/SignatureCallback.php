@@ -22,7 +22,7 @@ class SignatureCallback extends Observer
     function goal(ApiResourceInterface $observable, $response)
     {
         if (true) {
-            return true;
+            return $response;
         } else {
             throw new BadResponceException('Signature does not match to the response body');
         }

@@ -5,6 +5,7 @@ namespace ItlabStudio\ApiClient\CodeBase;
 
 
 use App\Utils\EncryptionManager;
+use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractApiResource;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use Psr\Cache\CacheItemInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -14,7 +15,7 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
  *
  * @package ItlabStudio\ApiClient\CodeBase
  */
-abstract class AbstractAuth
+abstract class AbstractAuth extends AbstractApiResource
 {
     /**
      * @var ApiClientInterface
@@ -48,14 +49,13 @@ abstract class AbstractAuth
      */
     public function __construct(ApiClientInterface $client, $type)
     {
-        $this->type = $type;
-        $this->client = $client;
+        $this->type  = $type;
         $this->cache = new FilesystemAdapter('api_client_token_cache');
+
+        parent::__construct($client);
     }
 
-    abstract protected function generateToken();
-
-    abstract public function doAuth();
+    abstract public function doAuth($resource = null);
 
     /**
      * @return mixed
@@ -88,4 +88,6 @@ abstract class AbstractAuth
     {
         return $this->publicTokenExpires;
     }
+
+    abstract protected function generateToken();
 }

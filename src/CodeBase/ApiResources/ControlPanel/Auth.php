@@ -108,7 +108,10 @@ class Auth extends AbstractAuth implements ApiAuthInterface
         );
     }
 
-    public function doAuth()
+    /**
+     * @param null $resource
+     */
+    public function doAuth($resource = null)
     {
         $this->client->setResolvedResource($this);
 

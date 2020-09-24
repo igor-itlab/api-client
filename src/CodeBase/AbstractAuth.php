@@ -48,36 +48,14 @@ abstract class AbstractAuth
      */
     public function __construct(ApiClientInterface $client, $type)
     {
-        $this->type   = $type;
+        $this->type = $type;
         $this->client = $client;
-        $this->cache  = new FilesystemAdapter('api_client_JWT_token');
+        $this->cache = new FilesystemAdapter('api_client_token_cache');
     }
 
-    public function generateToken()
-    {
-        /** @var CacheItemInterface $tokenItem */
-        $tokenItem = $this->cache->getItem(static::$API_CLIENT_TOKEN_NAME . $this->endpointType);
+    abstract protected function generateToken();
 
-        if (!$tokenItem->isHit()) {
-            $token = EncryptionManager::encodeSecretKey(
-                $this->getClientId(),
-                $this->getSecretKey(),
-                $this->getPrivateTokenExpires()
-            );
-            $tokenItem->expiresAfter($this->getPrivateTokenExpires());
-            $tokenItem->set($token);
-            $this->cache->save($tokenItem);
-        }
-
-        $this->client->setHeaders(
-            [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'Authorization' => 'JWS-AUTH-TOKEN ' . $tokenItem->get(),
-                ],
-            ]
-        );
-    }
+    abstract public function doAuth();
 
     /**
      * @return mixed
@@ -101,40 +79,6 @@ abstract class AbstractAuth
     public function getPrivateTokenExpires()
     {
         return $this->privateTokenExpires;
-    }
-
-    /**
-     * @param array $options
-     *
-     * @return array
-     */
-    public function request(array $options = [])
-    {
-        /** @var CacheItemInterface $tokenItem */
-        $tokenItem = $this->cache->getItem(static::$API_CLIENT_TOKEN_NAME . $this->endpointType);
-
-        if (!$tokenItem->isHit()) {
-//            $token = EncryptionManager::encodeSecretKey(
-//                $this->client->getClientId(),
-//                $this->client->getSecretKey(),
-//                $this->publicTokenExpires
-//            );
-
-            /** @TODO  Make request for token */
-            $token = $this->request();
-            $tokenItem->expiresAfter($this->getPublicTokenExpires());
-            $tokenItem->set($token);
-            $this->cache->save($tokenItem);
-        }
-
-        $this->client->setHeaders(
-            [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'Authorization' => 'Bearer ' . $tokenItem->get(),
-                ],
-            ]
-        );
     }
 
     /**

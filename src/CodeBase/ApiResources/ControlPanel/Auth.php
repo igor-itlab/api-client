@@ -8,6 +8,7 @@ use App\Utils\EncryptionManager;
 use ItlabStudio\ApiClient\CodeBase\AbstractAuth;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiAuthInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
+use Psr\Cache\CacheItemInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\CacheInterface;
 
@@ -45,6 +46,66 @@ class Auth extends AbstractAuth implements ApiAuthInterface
         $this->publicTokenExpires  = $publicTokenExpires;
 
         parent::__construct($client, $type);
+    }
+
+    public function generateToken()
+    {
+        /** @var CacheItemInterface $tokenItem */
+        $tokenItem = $this->cache->getItem(static::$API_CLIENT_TOKEN_NAME . $this->endpointType);
+
+        if (!$tokenItem->isHit()) {
+            $token = EncryptionManager::encodeSecretKey(
+                $this->getClientId(),
+                $this->getSecretKey(),
+                $this->getPrivateTokenExpires()
+            );
+            $tokenItem->expiresAfter($this->getPrivateTokenExpires());
+            $tokenItem->set($token);
+            $this->cache->save($tokenItem);
+        }
+
+        $this->client->setHeaders(
+            [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'JWS-AUTH-TOKEN ' . $tokenItem->get(),
+                ],
+            ]
+        );
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
+    protected function request(array $options = [])
+    {
+        /** @var CacheItemInterface $tokenItem */
+        $tokenItem = $this->cache->getItem(static::$API_CLIENT_TOKEN_NAME . $this->endpointType);
+
+        if (!$tokenItem->isHit()) {
+//            $token = EncryptionManager::encodeSecretKey(
+//                $this->client->getClientId(),
+//                $this->client->getSecretKey(),
+//                $this->publicTokenExpires
+//            );
+
+            /** @TODO  Make request for token */
+            $token = $this->request();
+            $tokenItem->expiresAfter($this->getPublicTokenExpires());
+            $tokenItem->set($token);
+            $this->cache->save($tokenItem);
+        }
+
+        $this->client->setHeaders(
+            [
+                'headers' => [
+                    'Content-Type'  => 'application/json',
+                    'Authorization' => 'Bearer ' . $tokenItem->get(),
+                ],
+            ]
+        );
     }
 
     public function doAuth()

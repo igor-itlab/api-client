@@ -66,9 +66,6 @@ class ApiClient implements ApiClientInterface
     ) {
         $this->container       = $container;
         $this->callbackHandler = $callbackHandler;
-//        $this->handler = new NativeHttpClient();
-//        $this->handler = HttpClient::class;
-//        $this->handler = new RequestBuilder();
     }
 
     /**
@@ -116,7 +113,6 @@ class ApiClient implements ApiClientInterface
      *
      * @return bool
      */
-//    public function makeRequest(array $options, $method, $uriAppend = '', array $queryParams = [], $callbacks = [])
     public function makeRequest(RequestBuilderInterface $requestBuilder)
     {
 
@@ -134,31 +130,6 @@ class ApiClient implements ApiClientInterface
         finally {
         }
     }
-
-//
-//    /**
-//     * {@inheritdoc}
-//     */
-//    public function sendRequest(string $httpMethod, $uri, array $headers = [], $body = null): ResponseInterface
-//    {
-//        $request = $this->requestFactory->createRequest($httpMethod, $uri);
-//
-//        if (null !== $body && is_string($body)) {
-//            $request = $request->withBody($this->streamFactory->createStream($body));
-//        }
-//        if (null !== $body && $body instanceof StreamInterface) {
-//            $request = $request->withBody($body);
-//        }
-//
-//        foreach ($headers as $header => $content) {
-//            $request = $request->withHeader($header, $content);
-//        }
-//
-//        $response = $this->httpClient->sendRequest($request);
-//        $response = $this->httpExceptionHandler->transformResponseToException($request, $response);
-//
-//        return $response;
-//    }
 
     /**
      * @param ApiResourceInterface $resolvedResource
@@ -179,33 +150,5 @@ class ApiClient implements ApiClientInterface
     public function getResourceInjector()
     {
         return $this->resourceInjector;
-    }
-
-    /**
-     * @param string $connectionId
-     */
-    public function setConnectionId(string $connectionId): void
-    {
-        $this->connectionId = $connectionId;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getHeaders()
-    {
-        return $this->headers;
-    }
-
-    /**
-     * @param $headers
-     *
-     * @return ApiClient
-     */
-    public function setHeaders($headers)
-    {
-        $this->headers = $headers;
-
-        return $this;
     }
 }

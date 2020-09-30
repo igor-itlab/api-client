@@ -213,35 +213,6 @@ class RequestBuilder implements RequestBuilderInterface
     {
         $this->options['body'] = $this->body;
 
-
-        if (isset($options['body'])) {
-            switch (strtolower($method)) {
-                case 'get' :
-                    $options['body'] = json_encode($options['body']);
-                    break;
-
-                case 'put':
-                    $options['body']                    = http_build_query($options['body']);
-                    $options['headers']['Content-Type'] = 'application/x-www-form-urlencoded';
-                    break;
-
-                case 'patch':
-                    $options['body']                    = json_encode($options['body']);
-                    $options['headers']['Content-Type'] = 'application/json';
-                    $method                             = 'PUT';
-                    break;
-
-                case 'post':
-                    $options['headers']['Content-Type'] = 'application/x-www-form-urlencoded';
-                    $options['form_params']             = $options['body'];
-                    break;
-
-                case 'delete':
-                    $options['body'] = http_build_query($options['body']);
-                    break;
-            }
-        }
-
         return $this;
     }
 

@@ -78,18 +78,11 @@ class ApiClient implements ApiClientInterface
     {
         if (!method_exists($this, $method)) {
 
-            if (($this->resourceInjector = $this->container->get(
+            if ($this->resourceInjector = $this->container->get(
                 'api_client.' . Container::underscore($method) . '_resource_injector'
-            ))
-//                && ($resourceMethod = array_shift($parameters))
-//                && $this->resourceInjector->supports($resourceMethod)
-            ) {
+            )) {
                 return $this->resourceInjector;
-
-//                return call_user_func_array([$this->resourceInjector, $resourceMethod], $parameters);
             }
-//
-
         }
 
         throw new ResourceNotFoundException('Resource "' . $method . '" not found. ' . __FILE__ . ': ' . __LINE__);

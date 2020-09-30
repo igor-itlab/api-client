@@ -16,6 +16,5 @@ interface ApiClientInterface
      *
      * @return mixed
      */
-//    public function makeRequest(array $options, $method, string $uriAppend, array $queryParams, $callbacks = []);
     public function makeRequest(RequestBuilderInterface $requestBuilder);
 }

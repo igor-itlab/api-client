@@ -3,9 +3,10 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractApiResource;
+use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiAuthInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiAuthorizationInterface;
+use ItlabStudio\ApiClient\CodeBase\Interfaces\RequestBuilderInterface;
 use ItlabStudio\ApiClient\Service\EncryptionManager;
 
 /**
@@ -13,30 +14,6 @@ use ItlabStudio\ApiClient\Service\EncryptionManager;
  */
 class ApiResource extends AbstractApiResource implements ApiAuthorizationInterface
 {
-
-    /**
-     * ApiResource constructor.
-     *
-     * @param ApiClientInterface $client
-     */
-    public function __construct(ApiClientInterface $client)
-    {
-        $this->client        = $client;
-        $this->apiDomainName = $_ENV['CP_CLIENT_DOMAIN_NAME'];
-        parent::__construct($client);
-    }
-
-    /**
-     * @param $type
-     *
-     * @return mixed|void
-     */
-    public function auth($type)
-    {
-        $this->client->getResourceInjector()->Auth($type)->doAuth();
-        $this->client->setResolvedResource($this);
-    }
-
     /**
      * @param $requestString
      * @param $key
@@ -49,5 +26,43 @@ class ApiResource extends AbstractApiResource implements ApiAuthorizationInterfa
             $requestString,
             $this->client->getResourceInjector()->Auth(static::$TYPE_PRIVATE)->getSecretKey()
         );
+    }
+
+    /**
+     * @param $type
+     *
+     * @return mixed|void
+     */
+    public function auth($type)
+    {
+
+    }
+
+    /**
+     * @param RequestBuilderInterface $requestBuilder
+     *
+     * @return mixed
+     */
+    protected function makeRequest(RequestBuilderInterface $requestBuilder)
+    {
+        if (!$this instanceof ApiAuthInterface) {
+            $requestBuilder->withHeaders(
+                $this->getAuthData(static::$TYPE_PRIVATE)['headers']
+            );
+        }
+
+        $requestBuilder->withDomain($_ENV['CP_CLIENT_DOMAIN_NAME']);
+
+        return parent::makeRequest($requestBuilder);
+    }
+
+    /**
+     * @param $type
+     *
+     * @return mixed
+     */
+    public function getAuthData($type = null)
+    {
+        return $this->client->getResourceInjector()->Auth($type)->getAuthData();
     }
 }

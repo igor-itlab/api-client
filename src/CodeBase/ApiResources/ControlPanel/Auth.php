@@ -48,7 +48,23 @@ class Auth extends AbstractAuth implements ApiAuthInterface
         parent::__construct($client, $type);
     }
 
-    public function generateToken()
+    /**
+     * @param null $resource
+     */
+    public function getAuthData($resource = null)
+    {
+        if ($this->type === ApiResource::$TYPE_PRIVATE) {
+
+            return $this->generateTokenData();
+        }
+
+        return $this->requestTokenData();
+    }
+
+    /**
+     * @return \string[][]
+     */
+    public function generateTokenData()
     {
         /** @var CacheItemInterface $tokenItem */
         $tokenItem = $this->cache->getItem(static::$API_CLIENT_TOKEN_NAME . $this->endpointType);
@@ -64,14 +80,11 @@ class Auth extends AbstractAuth implements ApiAuthInterface
             $this->cache->save($tokenItem);
         }
 
-        $this->client->setHeaders(
-            [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'Authorization' => 'JWS-AUTH-TOKEN ' . $tokenItem->get(),
-                ],
-            ]
-        );
+        return [
+            'headers' => [
+                'Authorization' => 'JWS-AUTH-TOKEN ' . $tokenItem->get(),
+            ],
+        ];
     }
 
     /**
@@ -79,7 +92,7 @@ class Auth extends AbstractAuth implements ApiAuthInterface
      *
      * @return array
      */
-    protected function request(array $options = [])
+    protected function requestTokenData(array $options = [])
     {
         /** @var CacheItemInterface $tokenItem */
         $tokenItem = $this->cache->getItem(static::$API_CLIENT_TOKEN_NAME . $this->endpointType);
@@ -90,37 +103,20 @@ class Auth extends AbstractAuth implements ApiAuthInterface
 //                $this->client->getSecretKey(),
 //                $this->publicTokenExpires
 //            );
-
             /** @TODO  Make request for token */
-            $token = $this->request();
+            $token = $this->makeRequest(
+                $this->request()
+            );
+
             $tokenItem->expiresAfter($this->getPublicTokenExpires());
             $tokenItem->set($token);
             $this->cache->save($tokenItem);
         }
 
-        $this->client->setHeaders(
-            [
-                'headers' => [
-                    'Content-Type'  => 'application/json',
-                    'Authorization' => 'Bearer ' . $tokenItem->get(),
-                ],
-            ]
-        );
-    }
-
-    /**
-     * @param null $resource
-     */
-    public function doAuth($resource = null)
-    {
-        $this->client->setResolvedResource($this);
-
-        if ($this->type === ApiResource::$TYPE_PRIVATE) {
-            $this->generateToken();
-
-            return;
-        }
-
-        $this->request();
+        return [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $tokenItem->get(),
+            ],
+        ];
     }
 }

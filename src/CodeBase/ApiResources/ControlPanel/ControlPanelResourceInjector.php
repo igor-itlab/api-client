@@ -3,23 +3,17 @@
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 
+use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractResourceInjector;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ResourceInjectorInterface;
 
 /**
  * Class ResourceInjector
  *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources
  */
-class ControlPanelResourceInjector implements ResourceInjectorInterface
+class ControlPanelResourceInjector extends AbstractResourceInjector
 {
 
-    /**
-     * @var ApiClientInterface
-     */
-    protected $client;
-
-    protected $handler;
     /**
      * @var string
      */
@@ -43,15 +37,6 @@ class ControlPanelResourceInjector implements ResourceInjectorInterface
         $this->publicTokenExpires  = (int)$publicTokenExpires;
     }
 
-    /**
-     * @param $method
-     *
-     * @return bool
-     */
-    public function supports($method)
-    {
-        return method_exists($this, $method);
-    }
 
     /** @return Auth */
     public function Auth($type)

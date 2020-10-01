@@ -4,22 +4,25 @@
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 
+use ItlabStudio\ApiClient\CodeBase\Builders\RequestBuilder;
+
 /**
  * Class Payment
+ *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel
  */
 class Payment extends ApiResource
 {
     /**
      * @param int $id
+     *
      * @return mixed|void
      */
     public function getById(int $id)
     {
-        $this->auth(static::$TYPE_PRIVATE);
-        $this->uri = 'payments/' . $id;
-
-        return $this->request();
+        return $this->makeRequest(
+            $this->request()->withUrl('api/private/payments/' . $id)
+        );
     }
 
     /**
@@ -27,10 +30,9 @@ class Payment extends ApiResource
      */
     public function getAll()
     {
-        $this->auth(static::$TYPE_PRIVATE);
-        $this->uri = 'payments';
-
-        return $this->request();
+        return $this->makeRequest(
+            $this->request()->withUrl('api/private/payments')
+        );
     }
 
     /**
@@ -44,22 +46,24 @@ class Payment extends ApiResource
      *  'attributes'    => $attributes,
      *  'callUrl'       => $callUrl
      * ]
+     *
      * @param array $body
+     *
      * @return mixed
      */
     public function setInvoice(array $body = [])
     {
-        $this->auth(static::$TYPE_PRIVATE);
-        $this->method = static::$METHOD_POST;
-        $this->uri = 'payments';
+        return $this->makeRequest(
+            $this->request()->withUrl('api/private/payments')
+                 ->withMethod(RequestBuilder::$METHOD_POST)
+                 ->withOptions(['json' => $this->withSignature($body)])
 
-        return $this->request(
-            ['json' => $this->withSignature($body)]
         );
     }
 
     /**
      * @param $body
+     *
      * @return array
      */
     protected function withSignature($body)
@@ -75,7 +79,7 @@ class Payment extends ApiResource
                         json_encode($body['attributes'])
                     ),
                     $this->client->getResourceInjector()->Auth(static::$TYPE_PRIVATE)->getSecretKey()
-                )
+                ),
             ]
         );
     }

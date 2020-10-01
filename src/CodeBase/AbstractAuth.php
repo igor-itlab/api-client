@@ -55,7 +55,7 @@ abstract class AbstractAuth extends AbstractApiResource
         parent::__construct($client);
     }
 
-    abstract public function doAuth($resource = null);
+    abstract public function getAuthData($resource = null);
 
     /**
      * @return mixed
@@ -89,5 +89,5 @@ abstract class AbstractAuth extends AbstractApiResource
         return $this->publicTokenExpires;
     }
 
-    abstract protected function generateToken();
+    abstract protected function generateTokenData();
 }

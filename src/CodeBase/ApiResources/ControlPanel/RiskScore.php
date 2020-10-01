@@ -5,20 +5,21 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 /**
  * Class RiskScore
+ *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel
  */
 class RiskScore extends ApiResource
 {
     /**
      * @param int $id
+     *
      * @return mixed
      */
     public function checkById(int $id)
     {
-        $this->auth(static::$TYPE_PRIVATE);
-        $this->uri = 'risk_scores/' . $id;
-
-        return $this->request();
+        return $this->makeRequest(
+            $this->request()->withUrl('api/private/risk_scores/' . $id)
+        );
     }
 
     /**
@@ -29,14 +30,16 @@ class RiskScore extends ApiResource
      *   'attributes' => $attributes,
      *   'connection' => $connection
      * ]
+     *
      * @param array $body
+     *
      * @return mixed
      */
     public function check(array $body = [])
     {
-        $this->auth(static::$TYPE_PRIVATE);
-        $this->uri = 'risk_scores';
-
-        return $this->request(['json' => $body]);
+        return $this->makeRequest(
+            $this->request()->withUrl('api/private/risk_scores')
+                 ->withOptions(['json' => $body])
+        );
     }
 }

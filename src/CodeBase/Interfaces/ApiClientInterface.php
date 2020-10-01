@@ -12,12 +12,9 @@ interface ApiClientInterface
 {
 
     /**
-     * @param array $options
-     * @param $method
-     * @param string $uriAppend
-     * @param array $queryParams
-     * @param array $callbacks
+     * @param RequestBuilderInterface $requestBuilder
+     *
      * @return mixed
      */
-    public function request(array $options, $method, string $uriAppend, array $queryParams, $callbacks = []);
+    public function makeRequest(RequestBuilderInterface $requestBuilder);
 }

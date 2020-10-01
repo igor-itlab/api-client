@@ -10,18 +10,18 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 class Currency extends ApiResource
 {
     static $TYPE_CRYPTO = 'CRYPTO';
-    static $TYPE_FIAT = 'CURRENCY';
-    
+    static $TYPE_FIAT   = 'CURRENCY';
+
     /**
      * @param int $id
+     *
      * @return mixed|void
      */
     public function getById(int $id)
     {
-        $this->auth(static::$TYPE_PRIVATE);
-        $this->uri = 'currencies/' . $id;
-
-        return $this->request();
+        return $this->makeRequest(
+            $this->request()->withUrl('api/private/currencies/' . $id)
+        );
     }
 
     /**
@@ -29,9 +29,8 @@ class Currency extends ApiResource
      */
     public function getAll()
     {
-        $this->auth(static::$TYPE_PRIVATE);
-        $this->uri = 'currencies';
-
-        return $this->request();
+        return $this->makeRequest(
+            $this->request()->withUrl('api/private/currencies')
+        );
     }
 }

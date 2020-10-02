@@ -9,6 +9,9 @@ use ItlabStudio\ApiClient\CodeBase\Interfaces\ResourceInjectorInterface;
 use ItlabStudio\ApiClient\CodeBase\Exceptions\ResourceNotFoundException;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
+use ItlabStudio\ApiClient\Events\AfterRequestEvent;
+use ItlabStudio\ApiClient\Events\ApiClientEvents;
+use ItlabStudio\ApiClient\Events\BeforeRequestEvent;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -30,8 +33,6 @@ class ApiClient implements ApiClientInterface
 
     protected $langCode;
 
-    protected $headers = [];
-
     protected $async = false;
 
     /**
@@ -48,24 +49,14 @@ class ApiClient implements ApiClientInterface
     protected $resolvedResource;
 
     /**
-     * @var \ItlabStudio\ApiClient\Service\ApiResourceCallbackHandler
-     */
-    protected $callbackHandler;
-
-    /**
      * ApiClient constructor.
-     *
-     * @param ContainerInterface                                        $container
-     * @param string                                                    $controlPanelID
-     * @param string                                                    $controlPanelSecret
-     * @param \ItlabStudio\ApiClient\Service\ApiResourceCallbackHandler $callbackHandler
+     * @param ContainerInterface $container
      */
     public function __construct(
-        ContainerInterface $container,
-        ApiResourceCallbackHandler $callbackHandler
+        ContainerInterface $container
     ) {
         $this->container       = $container;
-        $this->callbackHandler = $callbackHandler;
+        $this->eventDispatcher = $this->container->get('event_dispatcher');
     }
 
     /**
@@ -86,7 +77,6 @@ class ApiClient implements ApiClientInterface
         }
 
         throw new ResourceNotFoundException('Resource "' . $method . '" not found. ' . __FILE__ . ': ' . __LINE__);
-
     }
 
     /**
@@ -98,24 +88,40 @@ class ApiClient implements ApiClientInterface
     }
 
     /**
-     * @param array  $options
-     * @param        $method
-     * @param string $uriAppend
-     * @param array  $queryParams
-     * @param array  $callbacks
+     * @param RequestBuilderInterface $requestBuilder
      *
-     * @return bool
+     * @return bool|mixed
      */
     public function makeRequest(RequestBuilderInterface $requestBuilder)
     {
-
         try {
+            $beforeRequest = new BeforeRequestEvent(
+                $this->resolvedResource,
+                $requestBuilder
+            );
+            $this->eventDispatcher->dispatch(
+                $beforeRequest,
+                ApiClientEvents::BEFORE_REQUEST
+            );
+
             $response = $requestBuilder->makeRequest()->request(
                 $requestBuilder->getMethod(),
                 $requestBuilder->getUri()
-            );;
+            );
 
-            return $this->callbackHandler->setCustom($requestBuilder->getCallbacks())->fire($this->resolvedResource, $response);
+            $afterEvent = new AfterRequestEvent(
+                $this->resolvedResource,
+                $requestBuilder,
+                $response
+            );
+
+            $this->eventDispatcher->dispatch(
+                $afterEvent,
+                ApiClientEvents::AFTER_REQUEST
+            );
+
+            return $afterEvent->getResponse();
+
         } catch (NotFoundHttpException $e) {
         } catch (BadResponceException $e) {
             return false;

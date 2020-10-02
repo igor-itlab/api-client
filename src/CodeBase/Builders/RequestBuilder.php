@@ -74,7 +74,6 @@ class RequestBuilder implements RequestBuilderInterface
 
     /**
      * @param string $schema
-     * @return $this
      */
     public function withSchema(string $schema)
     {
@@ -84,8 +83,7 @@ class RequestBuilder implements RequestBuilderInterface
     }
 
     /**
-     * @param string $domain
-     * @return $this
+     * @param string $schema
      */
     public function withDomain(string $domain)
     {
@@ -96,7 +94,6 @@ class RequestBuilder implements RequestBuilderInterface
 
     /**
      * @param string $port
-     * @return $this
      */
     public function withPort(string $port)
     {
@@ -107,7 +104,6 @@ class RequestBuilder implements RequestBuilderInterface
 
     /**
      * @param string $url
-     * @return $this
      */
     public function withUrl(string $url)
     {
@@ -118,7 +114,6 @@ class RequestBuilder implements RequestBuilderInterface
 
     /**
      * @param string $method
-     * @return $this
      */
     public function withMethod(string $method)
     {
@@ -130,7 +125,6 @@ class RequestBuilder implements RequestBuilderInterface
     /**
      * @param $header
      * @param $value
-     * @return $this
      */
     public function withHeader($header, $value)
     {
@@ -141,7 +135,6 @@ class RequestBuilder implements RequestBuilderInterface
 
     /**
      * @param array $headers
-     * @return $this
      */
     public function withHeaders($headers = [])
     {
@@ -152,7 +145,6 @@ class RequestBuilder implements RequestBuilderInterface
 
     /**
      * @param array $options
-     * @return $this
      */
     public function withOptions($options = [])
     {
@@ -176,7 +168,6 @@ class RequestBuilder implements RequestBuilderInterface
 
     /**
      * @param array $queryParams
-     * @return $this
      */
     public function withQueryParams($queryParams = [])
     {
@@ -187,7 +178,6 @@ class RequestBuilder implements RequestBuilderInterface
 
     /**
      * @param $body
-     * @return $this
      */
     public function withBody($body)
     {
@@ -197,8 +187,7 @@ class RequestBuilder implements RequestBuilderInterface
     }
 
     /**
-     * @param array $callbacks
-     * @return $this
+     * @param $body
      */
     public function withCallbacks($callbacks = [])
     {
@@ -242,7 +231,7 @@ class RequestBuilder implements RequestBuilderInterface
      */
     protected function makeUri()
     {
-        $params = urldecode(http_build_query($this->queryParams));
+        $params = http_build_query($this->queryParams);
 
         $this->uri = sprintf('%1$s://%2$s', $this->schema, $this->domain)
             . ($this->port ? ':' . $this->port : '')

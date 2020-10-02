@@ -3,6 +3,7 @@
 
 namespace ItlabStudio\ApiClient;
 
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**

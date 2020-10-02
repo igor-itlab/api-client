@@ -18,7 +18,7 @@
         </service>
 
         <service id="ItlabStudio\ApiClient\CodeBase\Callbacks\SignatureCallback">
-            <tag name="api_client.callback_observer" priority="1"/>
+            <tag name="api_client.callback_observer" priority="50"/>
         </service>
 
         <service id="itlab_studio_api_client_service.callback_handler"
@@ -29,6 +29,10 @@
         <service id="itlab_studio_api_client_service.api_client" class="ItlabStudio\ApiClient\Service\ApiClient"
                  public="true">
             <argument type="service" id="service_container"/>
+        </service>
+
+        <service id="ItlabStudio\ApiClient\EventSubscriber\CallbackSubscriber">
+            <tag name="kernel.event_subscriber"/>
             <argument type="service" id="itlab_studio_api_client_service.callback_handler"/>
         </service>
 

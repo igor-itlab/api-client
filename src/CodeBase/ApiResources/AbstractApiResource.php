@@ -32,6 +32,10 @@ class AbstractApiResource implements ApiResourceInterface
 
     /** @var array */
     protected $filters = [];
+    /**
+     * @var array
+     */
+    public $calledResourceStack = [];
 
     /**
      * AbstractApiResource constructor.
@@ -41,6 +45,11 @@ class AbstractApiResource implements ApiResourceInterface
     public function __construct(ApiClientInterface $client)
     {
         $this->client = $client;
+    }
+
+    public function __call($name, $arguments)
+    {
+        // TODO: Implement __call() method.
     }
 
     /**
@@ -110,6 +119,8 @@ class AbstractApiResource implements ApiResourceInterface
      */
     protected function makeRequest(RequestBuilderInterface $requestBuilder)
     {
+        $this->calledResourceStack = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 7);
+
         $this->client->setResolvedResource($this);
 
         return $this->client->makeRequest(

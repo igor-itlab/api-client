@@ -9,9 +9,12 @@ use ItlabStudio\ApiClient\CodeBase\Interfaces\ResourceInjectorInterface;
 use ItlabStudio\ApiClient\CodeBase\Exceptions\ResourceNotFoundException;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
+use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseDenormalizerFactoryInterface;
+use ItlabStudio\ApiClient\Events\AfterCallbacksEvent;
 use ItlabStudio\ApiClient\Events\AfterRequestEvent;
 use ItlabStudio\ApiClient\Events\ApiClientEvents;
 use ItlabStudio\ApiClient\Events\BeforeRequestEvent;
+use ItlabStudio\ApiClient\Events\RequestFailedEvent;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -48,15 +51,22 @@ class ApiClient implements ApiClientInterface
 
     protected $resolvedResource;
 
+    protected $eventDispatcher;
+
+    /** @var ResponseDenormalizerFactoryInterface */
+    protected $responseDenormalizer;
+
     /**
      * ApiClient constructor.
+     *
      * @param ContainerInterface $container
      */
     public function __construct(
         ContainerInterface $container
     ) {
-        $this->container       = $container;
-        $this->eventDispatcher = $this->container->get('event_dispatcher');
+        $this->container            = $container;
+        $this->eventDispatcher      = $this->container->get('event_dispatcher');
+        $this->responseDenormalizer = $this->container->get('itlab_studio_api_client.response_denormalizer');;
     }
 
     /**
@@ -94,40 +104,65 @@ class ApiClient implements ApiClientInterface
      */
     public function makeRequest(RequestBuilderInterface $requestBuilder)
     {
-        try {
-            $beforeRequest = new BeforeRequestEvent(
-                $this->resolvedResource,
-                $requestBuilder
-            );
-            $this->eventDispatcher->dispatch(
-                $beforeRequest,
-                ApiClientEvents::BEFORE_REQUEST
-            );
+        $beforeRequest = new BeforeRequestEvent(
+            $this->resolvedResource,
+            $requestBuilder
+        );
+        $this->eventDispatcher->dispatch(
+            $beforeRequest,
+            ApiClientEvents::BEFORE_REQUEST
+        );
 
+        if (!$beforeRequest->continue) {
+            throw new \Exception('The request is interrupted by ApiClientEvents::BEFORE_REQUEST');
+        }
+
+        try {
             $response = $requestBuilder->makeRequest()->request(
                 $requestBuilder->getMethod(),
                 $requestBuilder->getUri()
             );
 
-            $afterEvent = new AfterRequestEvent(
-                $this->resolvedResource,
-                $requestBuilder,
-                $response
-            );
+        } catch (NotFoundHttpException $exception) {
+        } catch (BadResponceException $exception) {
+        } catch (BadResponceException $exception) {
 
             $this->eventDispatcher->dispatch(
-                $afterEvent,
-                ApiClientEvents::AFTER_REQUEST
+                new RequestFailedEvent(
+                    $this->resolvedResource,
+                    $requestBuilder,
+                    $exception
+                ),
+                ApiClientEvents::REQUEST_FAILED
             );
-
-            return $afterEvent->getResponse();
-
-        } catch (NotFoundHttpException $e) {
-        } catch (BadResponceException $e) {
-            return false;
         }
         finally {
         }
+
+        $afterEvent = new AfterRequestEvent(
+            $this->resolvedResource,
+            $requestBuilder,
+            $response
+        );
+
+        $this->eventDispatcher->dispatch(
+            $afterEvent,
+            ApiClientEvents::AFTER_REQUEST
+        );
+
+        if (!$afterEvent->continue) {
+            throw new \Exception('The request is interrupted by ApiClientEvents::AFTER_REQUEST');
+        }
+
+        $this->responseDenormalizer
+            ->setData($afterEvent->getResponse())
+            ->setResponseType($this->resolvedResource)
+            ->getResponseEntity();
+//            ->getCollectionEntity();
+
+
+        return $afterEvent->getResponse();
+
     }
 
     /**

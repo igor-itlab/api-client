@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  *
  * @package App\EventListener
  */
-class CallbackSubscriber implements EventSubscriberInterface
+class ResponseDenormalizerSubscriber implements EventSubscriberInterface
 {
     /**
      * CallbackHandler constructor.

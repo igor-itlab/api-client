@@ -36,5 +36,11 @@
             <argument type="service" id="itlab_studio_api_client_service.callback_handler"/>
         </service>
 
+        <service id="itlab_studio_api_client.response_denormalizer"
+                 class="ItlabStudio\ApiClient\CodeBase\DenormalizerFactory\ResponseDenormalizerFactory"
+                 public="true">
+            <argument type="service" id="serializer.denormalizer.array" />
+        </service>
+
     </services>
 </container>

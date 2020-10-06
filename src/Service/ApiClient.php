@@ -155,13 +155,13 @@ class ApiClient implements ApiClientInterface
             throw new \Exception('The request is interrupted by ApiClientEvents::AFTER_REQUEST');
         }
 
-        $response = (new ResponseProxy(
-            $this->resolvedResource,
-            $this->responseDenormalizer,
-            $afterEvent->getResponse()
-        ))
+        $response = (new ResponseProxy())
+            ->resolveClasses(
+                $this->resolvedResource,
+                $this->responseDenormalizer,
+                $afterEvent->getResponse()
+            )
             ->mapResponse();
-
 
 
         return $response;

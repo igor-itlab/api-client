@@ -32,9 +32,12 @@ class ResponseProxy
      */
     protected $resource;
 
-    public function __construct($data = null)
+    public function __construct($data = null, $mapperClass = null, $entityClass = null, $calledMethod = null)
     {
-        $this->data = $data;
+        $this->data         = $data;
+        $this->mapperClass  = $mapperClass;
+        $this->entityClass  = $entityClass;
+        $this->calledMethod = $calledMethod;
     }
 
     public function resolveClasses(
@@ -42,7 +45,7 @@ class ResponseProxy
         ResponseDenormalizerFactoryInterface $responseDenormalizer,
         $response = null
     ) {
-        $this->response = $response;
+        $this->data = $response;
 
         $resourceStack = array_filter($resource->calledResourceStack, function ($item) use ($resource) {
             return get_class($resource) === $item['class'];
@@ -59,13 +62,15 @@ class ResponseProxy
 
         $this->mapperClass = implode('\\', array_merge(
             $explodedClass,
-            ['Mappers', $this->resourceClass, $this->calledMethod]
+            ['Mappers', $this->resourceClass]
         ));
         $this->entityClass = implode('\\', array_merge(
                 $explodedClass,
                 ['Responses', $this->resourceClass, $this->calledMethod]
             )
         );
+
+        return $this;
     }
 
     public function mapResponse()
@@ -75,8 +80,8 @@ class ResponseProxy
         if (class_exists($this->mapperClass)
             && method_exists($this->mapperClass, $this->calledMethod)) {
 
-            $response = (new $this->mapperClass)($this->data)
-                ->{$this->calledMethod};
+            $response = (new $this->mapperClass($this->data))
+                ->{$this->calledMethod}();
 
         }
 

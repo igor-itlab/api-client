@@ -4,7 +4,7 @@
 namespace ItlabStudio\ApiClient\CodeBase\Interfaces;
 
 
-interface ResponseEntityInterface
+interface ResponseMapperInterface
 {
 
 }

@@ -7,7 +7,7 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class getAll implements ResponseEntityInterface
+class getAll implements ResponseMapperInterface
 {
     /**
      * @var int

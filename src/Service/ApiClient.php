@@ -10,6 +10,7 @@ use ItlabStudio\ApiClient\CodeBase\Exceptions\ResourceNotFoundException;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseDenormalizerFactoryInterface;
+use ItlabStudio\ApiClient\CodeBase\Proxy\ResponseProxy;
 use ItlabStudio\ApiClient\Events\AfterCallbacksEvent;
 use ItlabStudio\ApiClient\Events\AfterRequestEvent;
 use ItlabStudio\ApiClient\Events\ApiClientEvents;
@@ -154,15 +155,16 @@ class ApiClient implements ApiClientInterface
             throw new \Exception('The request is interrupted by ApiClientEvents::AFTER_REQUEST');
         }
 
-        $this->responseDenormalizer
-            ->setData($afterEvent->getResponse())
-            ->setResponseType($this->resolvedResource)
-            ->getResponseEntity();
-//            ->getCollectionEntity();
+        $response = (new ResponseProxy(
+            $this->resolvedResource,
+            $this->responseDenormalizer,
+            $afterEvent->getResponse()
+        ))
+            ->mapResponse();
 
 
-        return $afterEvent->getResponse();
 
+        return $response;
     }
 
     /**

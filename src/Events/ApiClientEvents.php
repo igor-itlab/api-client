@@ -14,7 +14,7 @@ class ApiClientEvents
     /**
      * @Event("ItlabStudio\ApiClient\Events\BeforeRequestEvent")
      */
-    public const BEFORE_REQUEST = 'api_client.defore_request';
+    public const BEFORE_REQUEST = 'api_client.before_request';
 
     /**
      * @Event("ItlabStudio\ApiClient\Events\AfterRequestEvent")

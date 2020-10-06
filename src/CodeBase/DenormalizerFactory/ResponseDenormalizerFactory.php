@@ -9,6 +9,7 @@ use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractApiResource;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseDenormalizerFactoryInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
 use ItlabStudio\ApiClient\CodeBase\DenormalizerFactory\ResponseCollection;
+use ItlabStudio\ApiClient\CodeBase\Proxy\ResponseProxy;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
@@ -54,19 +55,7 @@ class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterfac
      */
     public function setResponseType($resource): ResponseDenormalizerFactory
     {
-        $resourceStack = array_filter($resource->calledResourceStack, function ($item) use ($resource) {
-            return get_class($resource) === $item['class'];
-        });
-        $resourceStack  = array_pop($resourceStack);
 
-        /**
-         * @TODO: Implement pregreplace instead of explode
-         */
-        $explodedClass  = explode('\\', $resourceStack['class']);
-        $resourceFolder = array_pop($explodedClass);
-        array_push($explodedClass, 'Responses', $resourceFolder, $resourceStack['function']);
-
-        $this->responseType = implode('\\', $explodedClass);
 
         return $this;
     }
@@ -84,9 +73,9 @@ class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterfac
      *
      * @return ResponseDenormalizerFactory
      */
-    public function setData(array $data): ResponseDenormalizerFactory
+    public function mapResponse($resource, array $data): ResponseDenormalizerFactory
     {
-        $this->data = $data;
+        $this->data = new ResponseProxy($resource, $data);
 
         return $this;
     }

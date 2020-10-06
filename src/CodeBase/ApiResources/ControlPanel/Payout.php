@@ -3,7 +3,7 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
-use ItlabStudio\ApiClient\CodeBase\Builders\RequestBuilder;
+use ItlabStudio\ApiClient\CodeBase\Builders\HttpRequestBuilder;
 
 /**
  * Class Payout
@@ -55,7 +55,7 @@ class Payout extends ApiResource
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payouts')
-                 ->withMethod(RequestBuilder::$METHOD_POST)
+                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
                  ->withOptions(['json' => $this->withSignature($body)])
         );
     }

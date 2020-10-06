@@ -4,7 +4,7 @@
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 
-use ItlabStudio\ApiClient\CodeBase\Builders\RequestBuilder;
+use ItlabStudio\ApiClient\CodeBase\Builders\HttpRequestBuilder;
 
 /**
  * Class Payment
@@ -55,7 +55,7 @@ class Payment extends ApiResource
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payments')
-                 ->withMethod(RequestBuilder::$METHOD_POST)
+                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
                  ->withOptions(['json' => $this->withSignature($body)])
 
         );

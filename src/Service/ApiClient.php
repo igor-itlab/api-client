@@ -50,6 +50,7 @@ class ApiClient implements ApiClientInterface
 
     /**
      * ApiClient constructor.
+     *
      * @param ContainerInterface $container
      */
     public function __construct(

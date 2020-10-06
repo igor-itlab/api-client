@@ -2,7 +2,6 @@
 
 namespace ItlabStudio\ApiClient\Events;
 
-use ItlabStudio\ApiClient\CodeBase\Interfaces\RequestBuilderInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
 

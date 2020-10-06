@@ -19,7 +19,7 @@ class BeforeRequestEvent extends Event
     /**
      * BeforeRequestEvent constructor.
      *
-     * @param ApiResourceInterface    $apiResource
+     * @param ApiResourceInterface        $apiResource
      * @param RequestBuilderInterface $requestBuilder
      */
     public function __construct(ApiResourceInterface $apiResource, RequestBuilderInterface $requestBuilder)

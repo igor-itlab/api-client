@@ -6,7 +6,7 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractApiResource;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiAuthInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiAuthorizationInterface;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\HttpRequestBuilderInterface;
+use ItlabStudio\ApiClient\CodeBase\Interfaces\RequestBuilderInterface;
 use ItlabStudio\ApiClient\Service\EncryptionManager;
 
 /**
@@ -39,11 +39,11 @@ class ApiResource extends AbstractApiResource implements ApiAuthorizationInterfa
     }
 
     /**
-     * @param HttpRequestBuilderInterface $requestBuilder
+     * @param RequestBuilderInterface $requestBuilder
      *
      * @return mixed
      */
-    protected function makeRequest(HttpRequestBuilderInterface $requestBuilder)
+    protected function makeRequest(RequestBuilderInterface $requestBuilder)
     {
         if (!$this instanceof ApiAuthInterface) {
             $requestBuilder->withHeaders(

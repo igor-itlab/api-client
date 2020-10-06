@@ -3,7 +3,7 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
-use ItlabStudio\ApiClient\CodeBase\Builders\RequestBuilder;
+use ItlabStudio\ApiClient\CodeBase\Builders\HttpRequestBuilder;
 
 /**
  * Class Document
@@ -50,7 +50,7 @@ class Document extends ApiResource
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/documents')
-                 ->withMethod(RequestBuilder::$METHOD_POST)
+                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
         );
     }
 }

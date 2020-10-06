@@ -2,13 +2,14 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\Builders;
 
+use ItlabStudio\ApiClient\CodeBase\Interfaces\HttpRequestBuilderInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\RequestBuilderInterface;
 use Symfony\Component\HttpClient\HttpClient;
 
 /**
  * Class RequestBuilder
  */
-class RequestBuilder implements RequestBuilderInterface
+class HttpRequestBuilder implements HttpRequestBuilderInterface, RequestBuilderInterface
 {
     public static $METHOD_GET    = 'GET';
     public static $METHOD_POST   = 'POST';

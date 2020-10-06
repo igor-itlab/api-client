@@ -8,8 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
+use ItlabStudio\ApiClient\CodeBase\Builders\HttpRequestBuilder;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\RequestBuilderInterface;
-use ItlabStudio\ApiClient\CodeBase\Builders\RequestBuilder;
 
 /**
  * Class AbstractApiResource
@@ -111,9 +111,7 @@ class AbstractApiResource implements ApiResourceInterface
     }
 
     /**
-     * @param array $options
-     *
-     * @param array $callbacks
+     * @param RequestBuilderInterface $requestBuilder
      *
      * @return mixed
      */
@@ -133,10 +131,10 @@ class AbstractApiResource implements ApiResourceInterface
     /**
      * @param array $options
      *
-     * @return RequestBuilder
+     * @return HttpRequestBuilder
      */
     protected function request(array $options = [])
     {
-        return new RequestBuilder();
+        return new HttpRequestBuilder();
     }
 }

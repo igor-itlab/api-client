@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\ApiClient\ApiResources\Huobi\Response;
+namespace App\ApiClient\ApiResources\Huobi\Responses;
 
 
 use App\ApiClient\Interfaces\ResponseEntityInterface;

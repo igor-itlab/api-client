@@ -3,53 +3,59 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources;
 
-
 use ItlabStudio\ApiClient\CodeBase\DenormalizerFactory\ResponseCollection;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseMapperInterface;
 use ItlabStudio\ApiClient\CodeBase\Proxy\ResponseProxy;
 use phpDocumentor\Reflection\DocBlock\Tags\Method;
 use phpDocumentor\Reflection\Utils;
 
+/**
+ * Class AbstractMapper
+ *
+ * @package ItlabStudio\ApiClient\CodeBase\ApiResources
+ */
 class AbstractMapper
 {
     protected $data;
 
+    /**
+     * AbstractMapper constructor.
+     *
+     * @param $data
+     */
     public function __construct($data)
     {
         $this->data = $data;
     }
 
-//    public function mapMethod(&$item, $key, $prefix)
-//    {
-//        $item = "$prefix: $item1";
-//    }
-    public function single()
-    {
-        $this->buildRelations($method, $data);
-    }
-
+    /**
+     * @param $method
+     * @param $data
+     *
+     * @return array
+     */
     protected function buildRelations($method, $data)
     {
 
         if (is_array($data)) {
-            $response = new ResponseCollection();
+            $response = [];
             foreach ($data as $key => &$item) {
 
                 if (is_string($key) /*&& is_array($item)*/) {
                     if ($relations = $this->checkRelations($key)) {
-                        $response->set($key, (new ResponseProxy(
+                        $response[$key] = (new ResponseProxy(
                             $item,
                             $relations['mapper'],
                             $relations['entity'],
                             $relations['method']
-                        ))->mapResponse());
+                        ))->mapResponse();
                     } else {
-                        $response->set($key, $item);
+                        $response[$key] = $item;
                     }
 //                    $response->set($key, array_walk($data, 'mapMethod'));
 //                    $response->add($this->buildRelation(__METHOD__, $item));
                 } elseif (is_numeric($key) && is_array($item)) {
-                    $response->set($key, $this->buildRelations($method, $item));
+                    $response[$key] = $this->buildRelations($method, $item);
                 }
             }
 
@@ -60,9 +66,13 @@ class AbstractMapper
 
     }
 
+    /**
+     * @param $property
+     *
+     * @return bool
+     */
     protected function checkRelations($property)
     {
-
         return $this->relations()[$property] ?? false;
     }
 }

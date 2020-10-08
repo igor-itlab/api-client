@@ -32,6 +32,8 @@ class ResponseProxy
      */
     protected $resource;
 
+    protected $denormalizer;
+
     public function __construct($data = null, $mapperClass = null, $entityClass = null, $calledMethod = null)
     {
         $this->data         = $data;
@@ -46,6 +48,8 @@ class ResponseProxy
         $response = null
     ) {
         $this->data = $response;
+
+        $this->denormalizer = $responseDenormalizer;
 
         $resourceStack = array_filter($resource->calledResourceStack, function ($item) use ($resource) {
             return get_class($resource) === $item['class'];
@@ -83,6 +87,16 @@ class ResponseProxy
             $response = (new $this->mapperClass($this->data))
                 ->{$this->calledMethod}();
 
+        }
+
+        if ($this->denormalizer) {
+            return $this->denormalizer
+                ->setResponseType($this->entityClass)
+//                ->setResponseType($this->entityClass )
+//                ->setData($response)
+                ->setData([$response[0]])
+                ->getCollectionEntity();
+//                ->getResponseEntity();
         }
 
         return $response;

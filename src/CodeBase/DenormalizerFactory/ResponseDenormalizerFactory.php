@@ -55,7 +55,7 @@ class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterfac
      */
     public function setResponseType($resource): ResponseDenormalizerFactory
     {
-
+        $this->responseType = $resource;
 
         return $this;
     }
@@ -69,13 +69,11 @@ class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterfac
     }
 
     /**
-     * @param array $data
-     *
-     * @return ResponseDenormalizerFactory
+     * @return array
      */
-    public function mapResponse($resource, array $data): ResponseDenormalizerFactory
+    public function setData($data)
     {
-        $this->data = new ResponseProxy($resource, $data);
+        $this->data = $data;
 
         return $this;
     }
@@ -100,21 +98,18 @@ class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterfac
      */
     public function getCollectionEntity(): ?ResponseCollection
     {
-        if (is_array($this->data)) {
-            $collection   = new ResponseCollection();
-            $denormalizer = $this->denormalizer;
-            $responseType = $this->responseType;
+        $collection   = new ResponseCollection();
+        $denormalizer = $this->denormalizer;
+        $responseType = $this->responseType;
 
-            array_walk($this->data, function ($value, $key) use (&$collection, $denormalizer, $responseType) {
-                $object = $denormalizer->denormalize($value, $responseType);
-                if ($object instanceof ResponseEntityInterface) {
-                    $collection->add($object);
-                }
-            });
+        array_walk($this->data, function ($value, $key) use (&$collection, $denormalizer, $responseType) {
+            $object = $denormalizer->denormalize($value, $responseType);
+            if ($object instanceof ResponseEntityInterface) {
+                $collection->add($object);
+            }
+        });
 
-            return $collection;
-        }
-
-        return null;
+        return $collection;
+       
     }
 }

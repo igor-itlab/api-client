@@ -4,10 +4,17 @@
 namespace ItlabStudio\ApiClient\CodeBase\Proxy;
 
 
+use ApiPlatform\Core\Bridge\Symfony\Validator\Exception\ValidationException;
 use ItlabStudio\ApiClient\CodeBase\DenormalizerFactory\ResponseCollection;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseDenormalizerFactoryInterface;
+use Symfony\Component\Validator\Validation;
 
+/**
+ * Class ResponseProxy
+ *
+ * @package ItlabStudio\ApiClient\CodeBase\Proxy
+ */
 class ResponseProxy
 {
     /**
@@ -40,6 +47,7 @@ class ResponseProxy
         $this->mapperClass  = $mapperClass;
         $this->entityClass  = $entityClass;
         $this->calledMethod = $calledMethod;
+        $this->validator    = Validation::createValidator();
     }
 
     public function resolveClasses(
@@ -66,7 +74,7 @@ class ResponseProxy
 
         $this->mapperClass = implode('\\', array_merge(
             $explodedClass,
-            ['Mappers', $this->resourceClass]
+            ['Mappers', $this->resourceClass, $this->resourceClass]
         ));
         $this->entityClass = implode('\\', array_merge(
                 $explodedClass,
@@ -84,19 +92,17 @@ class ResponseProxy
         if (class_exists($this->mapperClass)
             && method_exists($this->mapperClass, $this->calledMethod)) {
 
-            $response = (new $this->mapperClass($this->data))
-                ->{$this->calledMethod}();
+            $response = (new $this->mapperClass($this->data))->{$this->calledMethod}();
 
+        } else {
+            $response = $this->data;
         }
 
-        if ($this->denormalizer) {
+        if ($this->denormalizer && class_exists($this->entityClass)) {
             return $this->denormalizer
                 ->setResponseType($this->entityClass)
-//                ->setResponseType($this->entityClass )
-//                ->setData($response)
-                ->setData([$response[0]])
-                ->getCollectionEntity();
-//                ->getResponseEntity();
+                ->setData($response)
+                ->denormalize();
         }
 
         return $response;

@@ -4,7 +4,6 @@
 namespace ItlabStudio\ApiClient\CodeBase\Interfaces;
 
 
-
 use ItlabStudio\ApiClient\CodeBase\DenormalizerFactory\ResponseCollection;
 
 /**

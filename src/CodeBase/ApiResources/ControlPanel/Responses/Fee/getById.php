@@ -3,18 +3,17 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee;
 
-
 use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\PaymentSystem;
 use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee\FeeCurrency;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class getAll
+ * Class getById
  *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee
  */
-class getAll implements ResponseEntityInterface
+class getById extends getAll
 {
 
     /**

@@ -5,13 +5,17 @@ namespace ItlabStudio\ApiClient\CodeBase\DenormalizerFactory;
 
 
 //use ItlabStudio\ApiClient\CodeBase\ApiResources\Huobi\ApiResource;
+use ApiPlatform\Core\Bridge\Symfony\Validator\Exception\ValidationException;
 use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractApiResource;
+use ItlabStudio\ApiClient\CodeBase\Exceptions\BadResponceException;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseDenormalizerFactoryInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
 use ItlabStudio\ApiClient\CodeBase\DenormalizerFactory\ResponseCollection;
 use ItlabStudio\ApiClient\CodeBase\Proxy\ResponseProxy;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface as SymfonyValidatorInterface;
+
 
 class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterface
 {
@@ -28,16 +32,19 @@ class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterfac
     /**
      * @var array
      */
-    protected $data;
+    protected $data = [];
 
     /**
      * ResponseDenormalizerFactory constructor.
      *
      * @param DenormalizerInterface $denormalizer
      */
-    public function __construct(DenormalizerInterface $denormalizer)
-    {
+    public function __construct(
+        DenormalizerInterface $denormalizer,
+        SymfonyValidatorInterface $validator
+    ) {
         $this->denormalizer = $denormalizer;
+        $this->validator    = $validator;
     }
 
     /**
@@ -79,17 +86,17 @@ class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterfac
     }
 
     /**
-     * @return ResponseEntityInterface
-     * @throws ExceptionInterface
+     * @return array|\ItlabStudio\ApiClient\CodeBase\DenormalizerFactory\ResponseCollection|ResponseEntityInterface|null
      */
-    public function getResponseEntity(): ?ResponseEntityInterface
+    public function denormalize()
     {
-        $object = $this->denormalizer->denormalize($this->data, $this->responseType);
-        if ($object instanceof ResponseEntityInterface) {
-            return $object;
+        if (count(array_filter($this->data, function ($key) {
+            return is_numeric($key);
+        }, ARRAY_FILTER_USE_KEY))) {
+            return $this->getCollectionEntity();
         }
 
-        return null;
+        return $this->getResponseEntity();
     }
 
     /**
@@ -98,18 +105,37 @@ class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterfac
      */
     public function getCollectionEntity(): ?ResponseCollection
     {
-        $collection   = new ResponseCollection();
-        $denormalizer = $this->denormalizer;
-        $responseType = $this->responseType;
+        $collection = new ResponseCollection();
 
-        array_walk($this->data, function ($value, $key) use (&$collection, $denormalizer, $responseType) {
-            $object = $denormalizer->denormalize($value, $responseType);
-            if ($object instanceof ResponseEntityInterface) {
+        array_walk($this->data, function ($value, $key) use ($collection) {
+
+            $object     = $this->denormalizer->denormalize($value, $this->responseType);
+            $violations = $this->validator->validate($object);
+            if ($object instanceof ResponseEntityInterface && 0 === \count($violations)) {
                 $collection->add($object);
+            }
+            if (0 !== \count($violations)) {
+                throw new ValidationException($violations);
             }
         });
 
         return $collection;
-       
+
+    }
+
+    /**
+     * @return ResponseEntityInterface
+     * @throws ExceptionInterface
+     */
+    public function getResponseEntity(): ?ResponseEntityInterface
+    {
+        $object     = $this->denormalizer->denormalize($this->data, $this->responseType);
+        $violations = $this->validator->validate($object);
+        if ($object instanceof ResponseEntityInterface && 0 === \count($violations)) {
+            return $object;
+        }
+        if (0 !== \count($violations)) {
+            throw new ValidationException($violations);
+        }
     }
 }

@@ -41,19 +41,17 @@ class AbstractMapper
             $response = [];
             foreach ($data as $key => &$item) {
 
-                if (is_string($key) /*&& is_array($item)*/) {
-                    if ($relations = $this->checkRelations($key)) {
+                if (is_string($key)) {
+                    if ($relations = $this->checkRelations($key, $method)) {
                         $response[$key] = (new ResponseProxy(
                             $item,
                             $relations['mapper'],
                             $relations['entity'],
-                            $relations['method']
+                            $method
                         ))->mapResponse();
                     } else {
                         $response[$key] = $item;
                     }
-//                    $response->set($key, array_walk($data, 'mapMethod'));
-//                    $response->add($this->buildRelation(__METHOD__, $item));
                 } elseif (is_numeric($key) && is_array($item)) {
                     $response[$key] = $this->buildRelations($method, $item);
                 }
@@ -71,8 +69,8 @@ class AbstractMapper
      *
      * @return bool
      */
-    protected function checkRelations($property)
+    protected function checkRelations($property, $method)
     {
-        return $this->relations()[$property] ?? false;
+        return $this->relations()[$method][$property] ?? false;
     }
 }

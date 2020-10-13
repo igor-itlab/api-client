@@ -99,13 +99,6 @@ class AbstractApiResource implements ApiResourceInterface
         return $this;
     }
 
-    /**
-     * @param int $id
-     */
-    public function getById(int $id)
-    {
-    }
-
     public function getAll()
     {
     }

@@ -39,7 +39,8 @@
         <service id="itlab_studio_api_client.response_denormalizer"
                  class="ItlabStudio\ApiClient\CodeBase\DenormalizerFactory\ResponseDenormalizerFactory"
                  public="true">
-            <argument type="service" id="serializer" />
+            <argument type="service" id="serializer"/>
+            <argument type="service" id="validator"/>
         </service>
 
     </services>

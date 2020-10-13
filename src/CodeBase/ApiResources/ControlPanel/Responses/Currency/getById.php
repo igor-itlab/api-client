@@ -5,22 +5,33 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Cur
 
 
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Currency
  *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Currency
  */
-class Currency implements ResponseEntityInterface
+class getById implements ResponseEntityInterface
 {
     /**
      * @var string
+     * @Assert\NotBlank()
      */
     protected $asset;
     /**
      * @var string
+     * @Assert\NotBlank()
      */
     protected $type;
+
+    /**
+     * @return string
+     */
+    public function getAsset(): string
+    {
+        return $this->asset;
+    }
 
     /**
      * @param string $asset
@@ -28,6 +39,14 @@ class Currency implements ResponseEntityInterface
     public function setAsset(string $asset): void
     {
         $this->asset = $asset;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
     }
 
     /**

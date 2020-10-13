@@ -12,11 +12,11 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 class Fee extends ApiResource
 {
     /**
-     * @param int $id
+     * @param string $id
      *
      * @return mixed|void
      */
-    public function getById(int $id)
+    public function getById(string $id)
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/fees/' . $id)

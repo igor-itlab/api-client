@@ -17,7 +17,7 @@ class Document extends ApiResource
      *
      * @return mixed|void
      */
-    public function getById(int $id)
+    public function getById($id)
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/documents/' . $id)

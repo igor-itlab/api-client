@@ -3,24 +3,13 @@
 namespace ItlabStudio\ApiClient\Service;
 
 use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\ControlPanelResourceInjector;
-use ItlabStudio\ApiClient\CodeBase\Exceptions\BadResponceException;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\RequestBuilderInterface;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ResourceInjectorInterface;
 use ItlabStudio\ApiClient\CodeBase\Exceptions\ResourceNotFoundException;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseDenormalizerFactoryInterface;
+use ItlabStudio\ApiClient\CodeBase\Interfaces\{ApiClientInterface, ApiResourceInterface, RequestBuilderInterface, ResourceInjectorInterface, ResponseDenormalizerFactoryInterface};
 use ItlabStudio\ApiClient\CodeBase\Proxy\ResponseProxy;
 use ItlabStudio\ApiClient\CodeBase\Response\ResponseFactory;
-use ItlabStudio\ApiClient\Events\AfterCallbacksEvent;
-use ItlabStudio\ApiClient\Events\AfterMappingEvent;
-use ItlabStudio\ApiClient\Events\AfterRequestEvent;
-use ItlabStudio\ApiClient\Events\ApiClientEvents;
-use ItlabStudio\ApiClient\Events\BeforeRequestEvent;
-use ItlabStudio\ApiClient\Events\RequestFailedEvent;
+use ItlabStudio\ApiClient\Events\{AfterCallbacksEvent, AfterMappingEvent, AfterRequestEvent, ApiClientEvents, BeforeRequestEvent, RequestFailedEvent};
 use Psr\Http\Message\RequestInterface;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\{Container, ContainerInterface};
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\NativeHttpClient;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;

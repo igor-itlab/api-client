@@ -16,7 +16,11 @@ use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface as SymfonyValidatorInterface;
 
-
+/**
+ * Class ResponseDenormalizerFactory
+ *
+ * @package ItlabStudio\ApiClient\CodeBase\DenormalizerFactory
+ */
 class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterface
 {
     /**
@@ -103,16 +107,16 @@ class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterfac
      * @return array|null
      * @throws ExceptionInterface
      */
-    public function getCollectionEntity(): ?ResponseCollection
+    public function getCollectionEntity(): ?array
     {
-        $collection = new ResponseCollection();
+        $collection = [];
 
-        array_walk($this->data, function ($value, $key) use ($collection) {
+        array_walk($this->data, function ($value, $key) use (&$collection) {
 
             $object     = $this->denormalizer->denormalize($value, $this->responseType);
             $violations = $this->validator->validate($object);
             if ($object instanceof ResponseEntityInterface && 0 === \count($violations)) {
-                $collection->add($object);
+                $collection[] = $object;
             }
             if (0 !== \count($violations)) {
                 throw new ValidationException($violations);

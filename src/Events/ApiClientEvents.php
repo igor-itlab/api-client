@@ -22,6 +22,11 @@ class ApiClientEvents
     public const AFTER_REQUEST = 'api_client.after_request';
 
     /**
+     * @Event("ItlabStudio\ApiClient\Events\AfterMappingEvent")
+     */
+    public const AFTER_MAPPING = 'api_client.after_mapping';
+
+    /**
      * @Event("ItlabStudio\ApiClient\Events\AfterCallbacksEvent")
      */
     public const AFTER_CALLBACKS = 'api_client.after_callbacks';

@@ -5,6 +5,7 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractResourceInjector;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
+use ItlabStudio\ApiClient\CodeBase\Response\ApiResponse;
 
 /**
  * Class ResourceInjector
@@ -23,6 +24,15 @@ class ControlPanelResourceInjector extends AbstractResourceInjector
      */
     protected $secretKey;
 
+    /**
+     * ControlPanelResourceInjector constructor.
+     *
+     * @param ApiClientInterface $client
+     * @param string             $controlPanelID
+     * @param string             $controlPanelSecret
+     * @param                    $privateTokenExpires
+     * @param                    $publicTokenExpires
+     */
     public function __construct(
         ApiClientInterface $client,
         string $controlPanelID,
@@ -36,7 +46,6 @@ class ControlPanelResourceInjector extends AbstractResourceInjector
         $this->privateTokenExpires = (int)$privateTokenExpires;
         $this->publicTokenExpires  = (int)$publicTokenExpires;
     }
-
 
     /** @return Auth */
     public function Auth($type)

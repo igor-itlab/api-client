@@ -5,10 +5,9 @@ namespace ItlabStudio\ApiClient\CodeBase\Proxy;
 
 
 use ApiPlatform\Core\Bridge\Symfony\Validator\Exception\ValidationException;
-use ItlabStudio\ApiClient\CodeBase\DenormalizerFactory\ResponseCollection;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseDenormalizerFactoryInterface;
-use Symfony\Component\Validator\Validation;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 /**
  * Class ResponseProxy
@@ -34,12 +33,13 @@ class ResponseProxy
      * @var mixed|string
      */
     protected $resourceClass;
-    /**
-     * @var ApiResourceInterface
-     */
-    protected $resource;
 
+    /**
+     * @var ResponseDenormalizerFactoryInterface
+     */
     protected $denormalizer;
+
+    protected $response;
 
     public function __construct($data = null, $mapperClass = null, $entityClass = null, $calledMethod = null)
     {
@@ -47,15 +47,23 @@ class ResponseProxy
         $this->mapperClass  = $mapperClass;
         $this->entityClass  = $entityClass;
         $this->calledMethod = $calledMethod;
-        $this->validator    = Validation::createValidator();
     }
 
+    /**
+     * @param ApiResourceInterface                 $resource
+     * @param ResponseDenormalizerFactoryInterface $responseDenormalizer
+     * @param                                      $response
+     *
+     * @return $this
+     */
     public function resolveClasses(
         ApiResourceInterface $resource,
         ResponseDenormalizerFactoryInterface $responseDenormalizer,
-        $response = null
+        $response
     ) {
-        $this->data = $response;
+        $this->response = $response;
+
+        $this->data = $response->getData();
 
         $this->denormalizer = $responseDenormalizer;
 
@@ -85,9 +93,12 @@ class ResponseProxy
         return $this;
     }
 
+    /**
+     * @return mixed
+     */
     public function mapResponse()
     {
-        $response = new ResponseCollection();
+        $response = [];
 
         if (class_exists($this->mapperClass)
             && method_exists($this->mapperClass, $this->calledMethod)) {
@@ -99,13 +110,13 @@ class ResponseProxy
         }
 
         if ($this->denormalizer && class_exists($this->entityClass)) {
-            return $this->denormalizer
+            $response = $this->denormalizer
                 ->setResponseType($this->entityClass)
                 ->setData($response)
                 ->denormalize();
         }
 
-        return $response;
+        return $this->response->setData($response);
     }
 
     /**

@@ -15,5 +15,5 @@ interface ResponseDenormalizerFactoryInterface
 {
     public function getResponseEntity(): ?ResponseEntityInterface;
 
-    public function getCollectionEntity(): ?ResponseCollection;
+    public function getCollectionEntity(): ?array;
 }

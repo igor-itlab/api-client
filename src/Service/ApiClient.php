@@ -160,7 +160,7 @@ class ApiClient implements ApiClientInterface
             );
             $this->eventDispatcher->dispatch(
                 $mappingFailedEvent,
-                ApiClientEvents::REQUEST_FAILED
+                ApiClientEvents::MAPPING_FAILED
             );
             $response = $mappingFailedEvent->getResponse();
         }

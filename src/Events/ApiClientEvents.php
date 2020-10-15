@@ -37,6 +37,11 @@ class ApiClientEvents
     public const REQUEST_FAILED = 'api_client.request_failed';
 
     /**
+     * @Event("ItlabStudio\ApiClient\Events\MappingFailedEvent")
+     */
+    public const MAPPING_FAILED = 'api_client.mapping_failed';
+
+    /**
      * @Event("ItlabStudio\ApiClient\Events\RequestSuccessfulEvent")
      */
     public const REQUEST_SUCCESSFUL = 'api_client.request_successful';

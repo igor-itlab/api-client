@@ -13,7 +13,7 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
  *
  * @package ItlabStudio\ApiClient\CodeBase\Response
  */
-class ApiResponse extends Response implements \Iterator, \Countable
+class ApiResponse extends Response implements \Iterator, \Countable, \Serializable
 {
 
     /**
@@ -134,5 +134,46 @@ class ApiResponse extends Response implements \Iterator, \Countable
     public function rewind()
     {
         return is_object($this->data) ? $this->data->first() : reset($this->data);
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return serialize([
+            'content'    => $this->data,
+            'errors'     => $this->errors,
+            'message'    => $this->message,
+            'statusCode' => $this->getStatusCode(),
+        ]);
+    }
+
+    /**
+     * @param string $serialized
+     */
+    public function unserialize($serialized)
+    {
+        $objectData       = unserialize($serialized);
+        $this->data       = $objectData['content'];
+        $this->errors     = $objectData['errors'];
+        $this->message    = $objectData['message'];
+        $this->statusCode = $objectData['statusCode'];
     }
 }

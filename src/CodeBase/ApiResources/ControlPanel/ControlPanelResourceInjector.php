@@ -5,6 +5,7 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractResourceInjector;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
+use ItlabStudio\ApiClient\CodeBase\Response\ApiResponse;
 
 /**
  * Class ResourceInjector

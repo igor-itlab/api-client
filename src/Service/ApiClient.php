@@ -7,7 +7,7 @@ use ItlabStudio\ApiClient\CodeBase\Exceptions\ResourceNotFoundException;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\{ApiClientInterface, ApiResourceInterface, RequestBuilderInterface, ResourceInjectorInterface, ResponseDenormalizerFactoryInterface};
 use ItlabStudio\ApiClient\CodeBase\Proxy\ResponseProxy;
 use ItlabStudio\ApiClient\CodeBase\Response\ResponseFactory;
-use ItlabStudio\ApiClient\Events\{AfterCallbacksEvent, AfterMappingEvent, AfterRequestEvent, ApiClientEvents, BeforeRequestEvent, RequestFailedEvent};
+use ItlabStudio\ApiClient\Events\{MappingFailedEvent, AfterCallbacksEvent, AfterMappingEvent, AfterRequestEvent, ApiClientEvents, BeforeRequestEvent, RequestFailedEvent};
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\DependencyInjection\{Container, ContainerInterface};
 use Symfony\Component\HttpClient\HttpClient;
@@ -112,14 +112,18 @@ class ApiClient implements ApiClientInterface
 
         } catch (\Exception $exception) {
 
+            $requestFailed = new RequestFailedEvent(
+                $this->resolvedResource,
+                $requestBuilder,
+                $exception
+            );
+
             $this->eventDispatcher->dispatch(
-                new RequestFailedEvent(
-                    $this->resolvedResource,
-                    $requestBuilder,
-                    $exception
-                ),
+                $requestFailed,
                 ApiClientEvents::REQUEST_FAILED
             );
+
+            $response = $requestFailed->getResponse();
         }
         finally {
         }
@@ -139,13 +143,30 @@ class ApiClient implements ApiClientInterface
             throw new \Exception('The request is interrupted by ApiClientEvents::AFTER_REQUEST');
         }
 
-        $response = (new ResponseProxy())
-            ->resolveClasses(
+        try {
+            $response = (new ResponseProxy())
+                ->resolveClasses(
+                    $this->resolvedResource,
+                    $this->responseDenormalizer,
+                    $afterRequest->getResponse()
+                )
+                ->mapResponse();
+        } catch (\Exception $exception) {
+            $mappingFailedEvent = new MappingFailedEvent(
                 $this->resolvedResource,
-                $this->responseDenormalizer,
-                $afterRequest->getResponse()
-            )
-            ->mapResponse();
+                $requestBuilder,
+                $exception,
+                $response
+            );
+            $this->eventDispatcher->dispatch(
+                $mappingFailedEvent,
+                ApiClientEvents::REQUEST_FAILED
+            );
+            $response = $mappingFailedEvent->getResponse();
+        }
+        finally {
+
+        }
 
         $afterMappingEvent = new AfterMappingEvent(
             $this->resolvedResource,

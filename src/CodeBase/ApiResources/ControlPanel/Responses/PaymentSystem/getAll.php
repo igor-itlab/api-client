@@ -26,7 +26,7 @@ class getAll implements ResponseEntityInterface
     protected $name;
     /**
      * @var string
-     * @Assert\NotBlank()
+     * @Assert\Email()
      */
     protected $subName;
 

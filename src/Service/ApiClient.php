@@ -3,18 +3,13 @@
 namespace ItlabStudio\ApiClient\Service;
 
 use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\ControlPanelResourceInjector;
-use ItlabStudio\ApiClient\CodeBase\Exceptions\BadResponceException;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\RequestBuilderInterface;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ResourceInjectorInterface;
 use ItlabStudio\ApiClient\CodeBase\Exceptions\ResourceNotFoundException;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
-use ItlabStudio\ApiClient\Events\AfterRequestEvent;
-use ItlabStudio\ApiClient\Events\ApiClientEvents;
-use ItlabStudio\ApiClient\Events\BeforeRequestEvent;
+use ItlabStudio\ApiClient\CodeBase\Interfaces\{ApiClientInterface, ApiResourceInterface, RequestBuilderInterface, ResourceInjectorInterface, ResponseDenormalizerFactoryInterface};
+use ItlabStudio\ApiClient\CodeBase\Proxy\ResponseProxy;
+use ItlabStudio\ApiClient\CodeBase\Response\ResponseFactory;
+use ItlabStudio\ApiClient\Events\{MappingFailedEvent, AfterCallbacksEvent, AfterMappingEvent, AfterRequestEvent, ApiClientEvents, BeforeRequestEvent, RequestFailedEvent};
 use Psr\Http\Message\RequestInterface;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\{Container, ContainerInterface};
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\NativeHttpClient;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -33,13 +28,6 @@ class ApiClient implements ApiClientInterface
 
     protected $langCode;
 
-    protected $async = false;
-
-    /**
-     * @var RequestInterface|string
-     */
-    protected $handler;
-
     /** @var ResourceInjectorInterface */
     protected $resourceInjector;
 
@@ -47,6 +35,11 @@ class ApiClient implements ApiClientInterface
     protected $container;
 
     protected $resolvedResource;
+
+    protected $eventDispatcher;
+
+    /** @var ResponseDenormalizerFactoryInterface */
+    protected $responseDenormalizer;
 
     /**
      * ApiClient constructor.
@@ -56,8 +49,9 @@ class ApiClient implements ApiClientInterface
     public function __construct(
         ContainerInterface $container
     ) {
-        $this->container       = $container;
-        $this->eventDispatcher = $this->container->get('event_dispatcher');
+        $this->container            = $container;
+        $this->eventDispatcher      = $this->container->get('event_dispatcher');
+        $this->responseDenormalizer = $this->container->get('itlab_studio_api_client.response_denormalizer');;
     }
 
     /**
@@ -95,40 +89,97 @@ class ApiClient implements ApiClientInterface
      */
     public function makeRequest(RequestBuilderInterface $requestBuilder)
     {
+        $beforeRequest = new BeforeRequestEvent(
+            $this->resolvedResource,
+            $requestBuilder
+        );
+        $this->eventDispatcher->dispatch(
+            $beforeRequest,
+            ApiClientEvents::BEFORE_REQUEST
+        );
+
+        if (!$beforeRequest->continue) {
+            throw new \Exception('The request is interrupted by ApiClientEvents::BEFORE_REQUEST');
+        }
+
         try {
-            $beforeRequest = new BeforeRequestEvent(
-                $this->resolvedResource,
-                $requestBuilder
-            );
-            $this->eventDispatcher->dispatch(
-                $beforeRequest,
-                ApiClientEvents::BEFORE_REQUEST
+            $response = $this->resourceInjector->responseClass::createFromResponse(
+                $requestBuilder->makeRequest()->request(
+                    $requestBuilder->getMethod(),
+                    $requestBuilder->getUri()
+                )
             );
 
-            $response = $requestBuilder->makeRequest()->request(
-                $requestBuilder->getMethod(),
-                $requestBuilder->getUri()
-            );
+        } catch (\Exception $exception) {
 
-            $afterEvent = new AfterRequestEvent(
+            $requestFailed = new RequestFailedEvent(
                 $this->resolvedResource,
                 $requestBuilder,
-                $response
+                $exception
             );
 
             $this->eventDispatcher->dispatch(
-                $afterEvent,
-                ApiClientEvents::AFTER_REQUEST
+                $requestFailed,
+                ApiClientEvents::REQUEST_FAILED
             );
 
-            return $afterEvent->getResponse();
-
-        } catch (NotFoundHttpException $e) {
-        } catch (BadResponceException $e) {
-            return false;
+            $response = $requestFailed->getResponse();
         }
         finally {
         }
+
+        $afterRequest = new AfterRequestEvent(
+            $this->resolvedResource,
+            $requestBuilder,
+            $response
+        );
+
+        $this->eventDispatcher->dispatch(
+            $afterRequest,
+            ApiClientEvents::AFTER_REQUEST
+        );
+
+        if (!$afterRequest->continue) {
+            throw new \Exception('The request is interrupted by ApiClientEvents::AFTER_REQUEST');
+        }
+
+        try {
+            $response = (new ResponseProxy())
+                ->resolveClasses(
+                    $this->resolvedResource,
+                    $this->responseDenormalizer,
+                    $afterRequest->getResponse()
+                )
+                ->mapResponse();
+        } catch (\Exception $exception) {
+            $mappingFailedEvent = new MappingFailedEvent(
+                $this->resolvedResource,
+                $requestBuilder,
+                $exception,
+                $response
+            );
+            $this->eventDispatcher->dispatch(
+                $mappingFailedEvent,
+                ApiClientEvents::MAPPING_FAILED
+            );
+            $response = $mappingFailedEvent->getResponse();
+        }
+        finally {
+
+        }
+
+        $afterMappingEvent = new AfterMappingEvent(
+            $this->resolvedResource,
+            $requestBuilder,
+            $response
+        );
+
+        $this->eventDispatcher->dispatch(
+            $afterMappingEvent,
+            ApiClientEvents::AFTER_MAPPING
+        );
+
+        return $response;
     }
 
     /**

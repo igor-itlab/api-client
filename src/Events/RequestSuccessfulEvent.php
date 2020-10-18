@@ -7,6 +7,7 @@ use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
 
 class RequestSuccessfulEvent extends Event
 {
+    public    $continue = true;
     protected $apiResource;
     protected $response;
 

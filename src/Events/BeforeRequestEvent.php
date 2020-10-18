@@ -13,6 +13,7 @@ use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
  */
 class BeforeRequestEvent extends Event
 {
+    public    $continue = true;
     protected $apiResource;
     protected $requestBuilder;
 

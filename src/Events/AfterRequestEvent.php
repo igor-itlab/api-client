@@ -8,6 +8,7 @@ use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiResourceInterface;
 
 class AfterRequestEvent extends Event
 {
+    public    $continue = true;
     protected $apiResource;
     protected $requestBuilder;
     protected $response;

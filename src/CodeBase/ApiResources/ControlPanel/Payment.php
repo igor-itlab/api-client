@@ -14,11 +14,11 @@ use ItlabStudio\ApiClient\CodeBase\Builders\HttpRequestBuilder;
 class Payment extends ApiResource
 {
     /**
-     * @param int $id
+     * @param  $id
      *
      * @return mixed|void
      */
-    public function getById(int $id)
+    public function getById($id)
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payments/' . $id)

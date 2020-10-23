@@ -62,20 +62,14 @@ class ResponseProxy
         $response
     ) {
         $this->response = $response;
-
         $this->data = $response->getData();
-
         $this->denormalizer = $responseDenormalizer;
 
         $resourceStack = array_filter($resource->calledResourceStack, function ($item) use ($resource) {
-            return get_class($resource) === $item['class'];
+            return isset($item['class']) && get_class($resource) === $item['class'];
         });
         $resourceStack = array_pop($resourceStack);
 
-        /**
-         * @TODO: Implement pregreplace instead of explode
-         */
-//        $this->mapperClass          = preg_replace('/.+\\(.+)$/', 'Mappers\\1/', "App\ApiClient\ApiResources\Huobi\Balance");
         $explodedClass       = explode('\\', $resourceStack['class']);
         $this->resourceClass = array_pop($explodedClass);
         $this->calledMethod  = $resourceStack['function'];

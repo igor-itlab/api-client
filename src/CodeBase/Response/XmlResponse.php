@@ -3,100 +3,80 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\Response;
 
-use ItlabStudio\ApiClient\CodeBase\Response\XmlResourceCaster\XmlResourceCaster;
-use SimpleXMLElement;
-use Symfony\Contracts\HttpClient\ResponseInterface;
-
 /**
  * Class XmlResponse
  * @package ItlabStudio\ApiClient\CodeBase\Response
  */
 class XmlResponse extends ApiResponse
 {
-
     /**
-     * @param ResponseInterface $response
+     * @param \SoapClient $response
      * @return XmlResponse|static
      */
     public static function createFromResponse($response)
     {
-        $xml = new SimpleXMLElement($response->__getLastResponse());
+        $plainXML = self::mungXML($response->__getLastResponse());
+        $arrayResult = json_decode(json_encode(SimpleXML_Load_String($plainXML, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
 
-        if (xml_get_error_code($response->__getLastResponse()) || !$xml) {
-            $parsedResp = XmlResourceCaster::castXml($response);
+        if ($arrayResult) {
+            preg_match("/HTTP\/\d\.\d\s*\K[\d]+/", $response->__getLastResponseHeaders(), $matches);
 
             return (new static(
                 '',
-                self::xml_to_array($xml),
-                $xml,
+                $arrayResult,
+                $response->__getLastResponse(),
                 [
                     'lastRequest'         => $response->__getLastRequest(),
                     'lastRequestHeaders'  => $response->__getLastRequestHeaders(),
                     'lastResponse'        => $response->__getLastResponse(),
-                    'lastResponseHeaders' => $response->__getLastResponseHeaders(),
-                    'parsedErrors'        => $parsedResp
+                    'lastResponseHeaders' => $response->__getLastResponseHeaders()
                 ],
-                $parsedResp,
-                xml_get_error_code($response->__getLastResponse()),
+                [],
+                $matches[0],
                 explode('\n\r', $response->__getLastResponseHeaders())
             ));
         }
-
-        preg_match("/HTTP\/\d\.\d\s*\K[\d]+/", $response->__getLastResponseHeaders(), $matches);
-
-        return (new static(
-            '',
-            self::xml_to_array($xml),
-            $xml,
-            [
-                'lastRequest'         => $response->__getLastRequest(),
-                'lastRequestHeaders'  => $response->__getLastRequestHeaders(),
-                'lastResponse'        => $response->__getLastResponse(),
-                'lastResponseHeaders' => $response->__getLastResponseHeaders()
-            ],
-            [],
-            $matches[0],
-            explode('\n\r', $response->__getLastResponseHeaders())
-        ));
     }
 
-    protected static function xml_to_array($root)
+    /**
+     * FUNCTION TO MUNG THE XML SO WE DO NOT HAVE TO DEAL WITH NAMESPACE
+     * @param $xml
+     * @return string|string[]|null
+     */
+    public static function mungXML($xml)
     {
-        $result = array();
+        $obj = SimpleXML_Load_String($xml);
+        if ($obj === FALSE) return $xml;
 
-        if ($root->hasAttributes()) {
-            $attrs = $root->attributes;
-            foreach ($attrs as $attr) {
-                $result['@attributes'][$attr->name] = $attr->value;
-            }
+        // GET NAMESPACES, IF ANY
+        $nss = $obj->getNamespaces(TRUE);
+        if (empty($nss)) return $xml;
+
+        // CHANGE ns: INTO ns_
+        $nsm = array_keys($nss);
+        foreach ($nsm as $key)
+        {
+            // A REGULAR EXPRESSION TO MUNG THE XML
+            $rgx
+                = '#'               // REGEX DELIMITER
+                . '('               // GROUP PATTERN 1
+                . '\<'              // LOCATE A LEFT WICKET
+                . '/?'              // MAYBE FOLLOWED BY A SLASH
+                . preg_quote($key)  // THE NAMESPACE
+                . ')'               // END GROUP PATTERN
+                . '('               // GROUP PATTERN 2
+                . ':{1}'            // A COLON (EXACTLY ONE)
+                . ')'               // END GROUP PATTERN
+                . '#'               // REGEX DELIMITER
+            ;
+            // INSERT THE UNDERSCORE INTO THE TAG NAME
+            $rep
+                = '$1'          // BACKREFERENCE TO GROUP 1
+                . '_'           // LITERAL UNDERSCORE IN PLACE OF GROUP 2
+            ;
+            // PERFORM THE REPLACEMENT
+            $xml =  preg_replace($rgx, $rep, $xml);
         }
-
-        if ($root->hasChildNodes()) {
-            $children = $root->childNodes;
-            if ($children->length == 1) {
-                $child = $children->item(0);
-                if ($child->nodeType == XML_TEXT_NODE) {
-                    $result['_value'] = $child->nodeValue;
-
-                    return count($result) == 1
-                        ? $result['_value']
-                        : $result;
-                }
-            }
-            $groups = array();
-            foreach ($children as $child) {
-                if (!isset($result[$child->nodeName])) {
-                    $result[$child->nodeName] = xml_to_array($child);
-                } else {
-                    if (!isset($groups[$child->nodeName])) {
-                        $result[$child->nodeName] = array($result[$child->nodeName]);
-                        $groups[$child->nodeName] = 1;
-                    }
-                    $result[$child->nodeName][] = xml_to_array($child);
-                }
-            }
-        }
-
-        return $result;
+        return $xml;
     }
 }

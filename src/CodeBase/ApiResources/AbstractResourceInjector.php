@@ -20,7 +20,7 @@ abstract class AbstractResourceInjector implements ResourceInjectorInterface
      *
      * @var string
      */
-    public $responseClass = ApiResponse::class;
+    public string $responseClass = ApiResponse::class;
     /**
      * @var ApiClientInterface
      */

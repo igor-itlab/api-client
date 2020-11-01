@@ -32,21 +32,19 @@ class AbstractMapper
      * @param $method
      * @param $data
      *
-     * @return array
+     * @return mixed
      */
     protected function buildRelations($method, $data)
     {
-
         if (is_array($data)) {
             $response = [];
             foreach ($data as $key => &$item) {
-
                 if (is_string($key)) {
-                    if ($relations = $this->checkRelations($key, $method)) {
+                    if ($relations = $this->checkRelations($method, $key)) {
                         $response[$key] = (new ResponseProxy(
                             $item,
                             $relations['mapper'],
-                            $relations['entity'],
+                            $relations['entity'] ?? '',
                             $method
                         ))->mapResponse();
                     } else {
@@ -61,15 +59,14 @@ class AbstractMapper
         }
 
         return $data;
-
     }
 
     /**
+     * @param $method
      * @param $property
-     *
      * @return bool
      */
-    protected function checkRelations($property, $method)
+    protected function checkRelations($method, $property)
     {
         return $this->relations()[$method][$property] ?? false;
     }

@@ -3,11 +3,10 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\DenormalizerFactory;
 
-
-//use ItlabStudio\ApiClient\CodeBase\ApiResources\Huobi\ApiResource;
 use ApiPlatform\Core\Bridge\Symfony\Validator\Exception\ValidationException;
 use ItlabStudio\ApiClient\CodeBase\ApiResources\AbstractApiResource;
 use ItlabStudio\ApiClient\CodeBase\Exceptions\BadResponceException;
+use ItlabStudio\ApiClient\CodeBase\Helper\ArrayHelper;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseDenormalizerFactoryInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
 use ItlabStudio\ApiClient\CodeBase\DenormalizerFactory\ResponseCollection;
@@ -94,13 +93,11 @@ class ResponseDenormalizerFactory implements ResponseDenormalizerFactoryInterfac
      */
     public function denormalize()
     {
-        if (count(array_filter($this->data, function ($key) {
-            return is_numeric($key);
-        }, ARRAY_FILTER_USE_KEY))) {
-            return $this->getCollectionEntity();
+        if (ArrayHelper::isAssoc($this->data)) {
+            return $this->getResponseEntity();
         }
 
-        return $this->getResponseEntity();
+        return $this->getCollectionEntity();
     }
 
     /**

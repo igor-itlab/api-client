@@ -40,6 +40,10 @@ class ResponseProxy
     protected $denormalizer;
 
     protected $response;
+    /**
+     * @var mixed
+     */
+    protected $data;
 
     public function __construct($data = null, $mapperClass = null, $entityClass = null, $calledMethod = null)
     {
@@ -96,9 +100,7 @@ class ResponseProxy
 
         if (class_exists($this->mapperClass)
             && method_exists($this->mapperClass, $this->calledMethod)) {
-
             $response = (new $this->mapperClass($this->data))->{$this->calledMethod}();
-
         } else {
             $response = $this->data;
         }
@@ -110,7 +112,7 @@ class ResponseProxy
                 ->denormalize();
         }
 
-        return $this->response->setData($response);
+        return $this->response ? $this->response->setData($response) : $response;
     }
 
     /**

@@ -98,8 +98,7 @@ class ResponseProxy
     {
         $response = [];
 
-        if (class_exists($this->mapperClass)
-            && method_exists($this->mapperClass, $this->calledMethod)) {
+        if (method_exists($this->mapperClass, $this->calledMethod)) {
             $response = (new $this->mapperClass($this->data))->{$this->calledMethod}();
         } else {
             $response = $this->data;

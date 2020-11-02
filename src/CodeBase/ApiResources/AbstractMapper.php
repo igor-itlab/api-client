@@ -3,11 +3,7 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources;
 
-use ItlabStudio\ApiClient\CodeBase\DenormalizerFactory\ResponseCollection;
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseMapperInterface;
 use ItlabStudio\ApiClient\CodeBase\Proxy\ResponseProxy;
-use phpDocumentor\Reflection\DocBlock\Tags\Method;
-use phpDocumentor\Reflection\Utils;
 
 /**
  * Class AbstractMapper
@@ -36,26 +32,19 @@ class AbstractMapper
      */
     protected function buildRelations($method, $data)
     {
-        if (is_array($data)) {
-            $response = [];
-            foreach ($data as $key => &$item) {
-                if (is_string($key)) {
-                    if ($relations = $this->checkRelations($method, $key)) {
-                        $response[$key] = (new ResponseProxy(
-                            $item,
-                            $relations['mapper'],
-                            $relations['entity'] ?? '',
-                            $method
-                        ))->mapResponse();
-                    } else {
-                        $response[$key] = $item;
-                    }
+        if (is_array($data) && $relations = $this->checkMethodRelations($method)) {
+            foreach ($data as $key => $item) {
+                if (is_string($key) && $this->checkRelations($method, $key)) {
+                    $data[$key] = (new ResponseProxy(
+                        $item,
+                        $relations[$key]['mapper'],
+                        '', //$relations[$key]['entity'],
+                        $method
+                    ))->mapResponse();
                 } elseif (is_numeric($key) && is_array($item)) {
-                    $response[$key] = $this->buildRelations($method, $item);
+                    $data[$key] = $this->buildRelations($method, $item);
                 }
             }
-
-            return $response;
         }
 
         return $data;
@@ -69,5 +58,14 @@ class AbstractMapper
     protected function checkRelations($method, $property)
     {
         return $this->relations()[$method][$property] ?? false;
+    }
+
+    /**
+     * @param $method
+     * @return bool
+     */
+    protected function checkMethodRelations($method)
+    {
+        return $this->relations()[$method] ?? false;
     }
 }

@@ -36,9 +36,11 @@ class getById implements ResponseEntityInterface
     /**
      * @param string $asset
      */
-    public function setAsset(string $asset): void
+    public function setAsset(string $asset)
     {
         $this->asset = $asset;
+
+        return $this;
     }
 
     /**
@@ -52,10 +54,10 @@ class getById implements ResponseEntityInterface
     /**
      * @param string $type
      */
-    public function setType(string $type): void
+    public function setType(string $type)
     {
         $this->type = $type;
+
+        return $this;
     }
-
-
 }

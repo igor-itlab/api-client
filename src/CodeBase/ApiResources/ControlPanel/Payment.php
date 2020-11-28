@@ -36,6 +36,31 @@ class Payment extends ApiResource
     }
 
     /**
+     * @param $id
+     * @return mixed
+     */
+    public function retryCallback($id)
+    {
+        return $this->makeRequest(
+            $this->request()->withUrl('/api/private/payments/retry-callback/' . $id)
+        );
+    }
+
+    /**
+     * @param array $body
+     * @return mixed
+     */
+    public function attributePrerequest(array $body = [])
+    {
+        return $this->makeRequest(
+            $this->request()
+                ->withMethod(HttpRequestBuilder::$METHOD_POST)
+                ->withUrl('/api/private/payments/attribute-prerequest')
+                ->withOptions(['json' => $body])
+        );
+    }
+
+    /**
      * [
      *  'paymentSystem' => $paymentSystem,
      *  'amount'        => $amount,
@@ -55,8 +80,8 @@ class Payment extends ApiResource
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payments')
-                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
-                 ->withOptions(['json' => $this->withSignature($body)])
+                ->withMethod(HttpRequestBuilder::$METHOD_POST)
+                ->withOptions(['json' => $this->withSignature($body)])
 
         );
     }

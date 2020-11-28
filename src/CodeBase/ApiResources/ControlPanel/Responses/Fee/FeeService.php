@@ -43,11 +43,6 @@ class FeeService implements ResponseEntityInterface
     protected $enable;
 
     /**
-     * @var array
-     */
-    protected $support = [];
-
-    /**
      * @param string $id
      */
     public function setId(string $id): void
@@ -86,13 +81,4 @@ class FeeService implements ResponseEntityInterface
     {
         $this->enable = $enable;
     }
-
-    /**
-     * @param array $support
-     */
-    public function setSupport(array $support): void
-    {
-        $this->support = $support;
-    }
-
 }

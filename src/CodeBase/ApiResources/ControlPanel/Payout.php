@@ -13,11 +13,11 @@ use ItlabStudio\ApiClient\CodeBase\Builders\HttpRequestBuilder;
 class Payout extends ApiResource
 {
     /**
-     * @param int $id
+     * @param $id
      *
      * @return mixed|void
      */
-    public function getById(int $id)
+    public function getById($id)
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payouts/' . $id)
@@ -31,6 +31,31 @@ class Payout extends ApiResource
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payouts')
+        );
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function retryCallback($id)
+    {
+        return $this->makeRequest(
+            $this->request()->withUrl('/api/private/payouts/retry-callback/' . $id)
+        );
+    }
+
+    /**
+     * @param array $body
+     * @return mixed
+     */
+    public function attributePrerequest(array $body = [])
+    {
+        return $this->makeRequest(
+            $this->request()
+                ->withMethod(HttpRequestBuilder::$METHOD_POST)
+                ->withUrl('/api/private/payouts/attribute-prerequest')
+                ->withOptions(['json' => $body])
         );
     }
 
@@ -55,8 +80,8 @@ class Payout extends ApiResource
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payouts')
-                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
-                 ->withOptions(['json' => $this->withSignature($body)])
+                ->withMethod(HttpRequestBuilder::$METHOD_POST)
+                ->withOptions(['json' => $this->withSignature($body)])
         );
     }
 

@@ -81,3 +81,47 @@ Work with defined callbacks
     $this->apiClient->ControlPanel()->Currency()->pushCallbacks([new SignatureCallback()])->getAll();
 
 ```
+
+Work with iterators
+
+```php
+
+    $response = $this->apiClient->ControlPanel()->Currency()
+        ->setFilter('type', Currency::$TYPE_CRYPTO)->getAll();
+
+    foreach($response as $item) {
+        $item->getAsset();
+    }   
+
+````
+
+Work with collections
+
+```php
+
+    $response->getData()->first()->getAsset();
+
+```
+
+Prepare for log
+
+```php
+
+    /**
+        include structure
+        [
+            'content'    => $this->data,
+            'errors'     => $this->errors,
+            'message'    => $this->message,
+            'statusCode' => $this->getStatusCode(),
+        ]
+    */
+    $this->log(serialize($response));  
+
+    /**
+       to restore 
+    */
+
+    $response = unserialize($this->readLog());
+
+```

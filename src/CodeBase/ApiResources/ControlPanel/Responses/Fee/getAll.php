@@ -3,10 +3,9 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee;
 
-
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\PaymentSystem;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee\FeeCurrency;
+use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee\BaseFee;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
+use phpDocumentor\Reflection\DocBlock\Tags\Reference\Url;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -16,6 +15,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class getAll implements ResponseEntityInterface
 {
+    /**
+     * @var string
+     * @Assert\NotNull
+     */
+    private $id;
+
+    /**
+     * @var BaseFee
+     */
+    protected BaseFee $baseFee;
 
     /**
      * @Assert\PositiveOrZero()
@@ -33,31 +42,27 @@ class getAll implements ResponseEntityInterface
      * @Assert\PositiveOrZero()
      */
     protected $max;
+
+
     /**
-     * @var string
-     *
+     * @return BaseFee
      */
-    protected $direction;
+    public function getBaseFee(): BaseFee
+    {
+        return $this->baseFee;
+    }
+
     /**
-     * @var string
-     * @Assert\NotNull
+     * @param BaseFee $baseFee
+     * @return $this
      */
-    private $id;
-    /**
-     * @var FeeService
-     * @Assert\Valid()
-     */
-    private $service;
-    /**
-     * @var ?FeePaymentSystem
-     * @Assert\Valid()
-     */
-    private ?FeePaymentSystem $paymentSystem;
-    /**
-     * @var ?FeeCurrency
-     * @Assert\Valid()
-     */
-    private ?FeeCurrency $currency;
+    public function setBaseFee(?BaseFee $baseFee)
+    {
+        $this->baseFee = $baseFee;
+
+        return $this;
+    }
+
 
     /**
      * @return string
@@ -138,69 +143,4 @@ class getAll implements ResponseEntityInterface
     {
         $this->max = $max;
     }
-
-    /**
-     * @return string
-     */
-    public function getDirection(): string
-    {
-        return $this->direction;
-    }
-
-    /**
-     * @param string $direction
-     */
-    public function setDirection(string $direction): void
-    {
-        $this->direction = $direction;
-    }
-
-    /**
-     * @return FeeService
-     */
-    public function getService(): FeeService
-    {
-        return $this->service;
-    }
-
-    /**
-     * @param FeeService $service
-     */
-    public function setService(FeeService $service): void
-    {
-        $this->service = $service;
-    }
-
-    /**
-     * @return FeePaymentSystem
-     */
-    public function getPaymentSystem(): FeePaymentSystem
-    {
-        return $this->paymentSystem;
-    }
-
-    /**
-     * @param ?FeePaymentSystem $paymentSystem
-     */
-    public function setPaymentSystem(?FeePaymentSystem $paymentSystem): void
-    {
-        $this->paymentSystem = $paymentSystem;
-    }
-
-    /**
-     * @return \ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee\FeeCurrency
-     */
-    public function getCurrency(): \ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee\FeeCurrency
-    {
-        return $this->currency;
-    }
-
-    /**
-     * @param ?FeeCurrency $currency
-     */
-    public function setCurrency(?FeeCurrency $currency): void
-    {
-        $this->currency = $currency;
-    }
-
 }

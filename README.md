@@ -116,7 +116,7 @@ Prepare for log
             'statusCode' => $this->getStatusCode(),
         ]
     */
-    $this->lof(serialize($response));  
+    $this->log(serialize($response));  
 
     /**
        to restore 

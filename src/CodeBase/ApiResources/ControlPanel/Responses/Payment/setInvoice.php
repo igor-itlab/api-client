@@ -3,14 +3,27 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment;
 
+use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class setInvoice
+/**
+ * Class setInvoice
+ * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment
+ */
+class setInvoice implements ResponseEntityInterface
 {
+    /**
+     * @var string
+     */
+    protected $id;
 
     /**
-     * @var array
-     * @Assert\NotNull()
+     * @var string
+     */
+    protected $processingId;
+
+    /**
+     * @var PaymentPaymentSystem
      */
     protected $paymentSystem;
 
@@ -18,9 +31,14 @@ class setInvoice
      * @Assert\PositiveOrZero()
      */
     protected $amount;
+
     /**
-     * @var array
-     * @Assert\NotNull()
+     * @Assert\PositiveOrZero()
+     */
+    protected $processedAmount;
+
+    /**
+     * @var PaymentCurrency
      */
     protected $currency;
 
@@ -32,25 +50,27 @@ class setInvoice
 
     /**
      * @var string
-     * @Assert\Url()
      */
     protected $returnUrl;
 
     /**
-     * @var string
+     * @var PaymentConnection
      */
     protected $connection;
     /**
      * @var ?array
-     * @Assert\Json()
      */
     protected $attributes;
 
     /**
      * @var string
-     * @Assert\Url()
      */
-    protected $callUrl;
+    protected $status;
+
+    /**
+     * @var string
+     */
+    protected $callBackUrl;
 
     /**
      * @var string
@@ -58,20 +78,10 @@ class setInvoice
     protected $signature;
 
     /**
-     * @return array
+     * @var ?array
      */
-    public function getPaymentSystem(): array
-    {
-        return $this->paymentSystem;
-    }
+    protected $flowData;
 
-    /**
-     * @param array $paymentSystem
-     */
-    public function setPaymentSystem(array $paymentSystem): void
-    {
-        $this->paymentSystem = $paymentSystem;
-    }
 
     /**
      * @return mixed
@@ -87,22 +97,6 @@ class setInvoice
     public function setAmount($amount): void
     {
         $this->amount = $amount;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCurrency(): array
-    {
-        return $this->currency;
-    }
-
-    /**
-     * @param array $currency
-     */
-    public function setCurrency(array $currency): void
-    {
-        $this->currency = $currency;
     }
 
     /**
@@ -138,19 +132,22 @@ class setInvoice
     }
 
     /**
-     * @return string
+     * @param PaymentConnection $connection
+     * @return setInvoice
      */
-    public function getConnection(): string
+    public function setConnection(PaymentConnection $connection): setInvoice
     {
-        return $this->connection;
+        $this->connection = $connection;
+
+        return $this;
     }
 
     /**
-     * @param string $connection
+     * @return PaymentConnection
      */
-    public function setConnection(string $connection): void
+    public function getConnection(): PaymentConnection
     {
-        $this->connection = $connection;
+        return $this->connection;
     }
 
     /**
@@ -172,22 +169,6 @@ class setInvoice
     /**
      * @return string
      */
-    public function getCallUrl(): string
-    {
-        return $this->callUrl;
-    }
-
-    /**
-     * @param string $callUrl
-     */
-    public function setCallUrl(string $callUrl): void
-    {
-        $this->callUrl = $callUrl;
-    }
-
-    /**
-     * @return string
-     */
     public function getSignature(): string
     {
         return $this->signature;
@@ -201,4 +182,157 @@ class setInvoice
         $this->signature = $signature;
     }
 
+    /**
+     * @param PaymentPaymentSystem $paymentSystem
+     * @return setInvoice
+     */
+    public function setPaymentSystem(PaymentPaymentSystem $paymentSystem): setInvoice
+    {
+        $this->paymentSystem = $paymentSystem;
+
+        return $this;
+    }
+
+    /**
+     * @return PaymentPaymentSystem
+     */
+    public function getPaymentSystem(): PaymentPaymentSystem
+    {
+        return $this->paymentSystem;
+    }
+
+    /**
+     * @param PaymentCurrency $currency
+     * @return setInvoice
+     */
+    public function setCurrency(PaymentCurrency $currency): setInvoice
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * @return PaymentCurrency
+     */
+    public function getCurrency(): PaymentCurrency
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @param mixed $processedAmount
+     * @return setInvoice
+     */
+    public function setProcessedAmount($processedAmount)
+    {
+        $this->processedAmount = $processedAmount;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProcessedAmount()
+    {
+        return $this->processedAmount;
+    }
+
+    /**
+     * @param string $callBackUrl
+     * @return setInvoice
+     */
+    public function setCallBackUrl(string $callBackUrl): setInvoice
+    {
+        $this->callBackUrl = $callBackUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCallBackUrl(): string
+    {
+        return $this->callBackUrl;
+    }
+
+    /**
+     * @param string $status
+     * @return setInvoice
+     */
+    public function setStatus(string $status): setInvoice
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param array $flowData
+     * @return $this
+     */
+    public function setFlowData(array $flowData)
+    {
+        foreach ($flowData as $item) {
+            $this->flowData[$item['name']] = $item['value'];
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFlowData()
+    {
+        return $this->flowData;
+    }
+
+    /**
+     * @param string $processingId
+     * @return setInvoice
+     */
+    public function setProcessingId(string $processingId): setInvoice
+    {
+        $this->processingId = $processingId;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProcessingId(): string
+    {
+        return $this->processingId;
+    }
+
+    /**
+     * @param string $id
+     * @return setInvoice
+     */
+    public function setId(string $id): setInvoice
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
 }

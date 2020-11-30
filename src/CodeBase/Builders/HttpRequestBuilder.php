@@ -172,7 +172,7 @@ class HttpRequestBuilder implements HttpRequestBuilderInterface, RequestBuilderI
      */
     public function withQueryParams($queryParams = [])
     {
-        $this->queryParams = $queryParams;
+        $this->queryParams = array_merge($this->queryParams, $queryParams);
 
         return $this;
     }

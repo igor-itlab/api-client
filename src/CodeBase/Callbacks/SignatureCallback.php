@@ -25,7 +25,7 @@ class SignatureCallback extends Observer
     function goal(ApiResourceInterface $observable, $response)
     {
         if ($observable instanceof ApiResource) {
-            return $response->toArray();
+            return $response;//->toArray();
         } elseif ($observable instanceof ApiResourceInterface) {
             return $response;
         } else {

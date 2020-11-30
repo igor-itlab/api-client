@@ -16,8 +16,10 @@ class Currency extends ApiResource
      * @param int $id
      *
      * @return mixed|void
+     * @deprecated Will be removed soon. Please use asset filter with getAll() method
+     *
      */
-    public function getById(int $id)
+    public function getById($id)
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/currencies/' . $id)

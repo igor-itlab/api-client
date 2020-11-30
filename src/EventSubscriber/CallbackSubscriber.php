@@ -3,12 +3,10 @@
 
 namespace ItlabStudio\ApiClient\EventSubscriber;
 
-//use Doctrine\Common\EventSubscriber;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\CallbackHandlerInterface;
 use ItlabStudio\ApiClient\Events\AfterRequestEvent;
 use ItlabStudio\ApiClient\Events\ApiClientEvents;
 use ItlabStudio\ApiClient\Events\BeforeRequestEvent;
-use ItlabStudio\ApiClient\Service\ApiResourceCallbackHandler;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**

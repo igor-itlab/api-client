@@ -16,23 +16,10 @@ class Balances extends ApiResource
      *
      * @return mixed|void
      */
-    public function getById(int $id)
+    public function getById($id)
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/balances/' . $id)
-        );
-    }
-
-    /**
-     * @param string $currency
-     *
-     * @return mixed|void
-     */
-    public function getByCurrency(string $currency)
-    {
-        return $this->makeRequest(
-            $this->request()->withUrl('api/private/balances')
-                 ->withQueryParam('currency', strtolower($currency))
         );
     }
 
@@ -51,7 +38,7 @@ class Balances extends ApiResource
      *
      * @return mixed
      */
-    public function getByAbbr(string $currency)
+    public function getByCurrency(string $currency)
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/balances')

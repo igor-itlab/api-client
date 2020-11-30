@@ -61,9 +61,9 @@ class BaseFee implements ResponseEntityInterface
 
 
     /**
-     * @return \ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee\FeeCurrency
+     * @return FeeCurrency
      */
-    public function getCurrency(): \ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee\FeeCurrency
+    public function getCurrency(): FeeCurrency
     {
         return $this->currency;
     }

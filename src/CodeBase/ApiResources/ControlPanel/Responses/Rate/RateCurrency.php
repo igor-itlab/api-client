@@ -1,7 +1,7 @@
 <?php
 
 
-namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee;
+namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Rate;
 
 
 use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\defaults\Currency;
@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Fee
  */
-class FeeCurrency extends Currency
+class RateCurrency extends Currency
 {
 
 }

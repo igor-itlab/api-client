@@ -3,7 +3,6 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Rate;
 
-
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -15,27 +14,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 class getAll implements ResponseEntityInterface
 {
     /**
-     * @var string
-     * @Assert\NotNull()
+     * @var RateCurrency
      */
-    protected $status;
+    protected RateCurrency $currency;
 
     /**
-     * @var ?array
+     * @var RateService
      */
-    protected $info;
-
-    /**
-     * @var ?array
-     * @Assert\Json()
-     */
-    protected $attributes;
-
-    /**
-     * @var array
-     * @Assert\NotNull()
-     */
-    protected $currency;
+    protected RateService $service;
 
     /**
      * @Assert\PositiveOrZero()
@@ -51,81 +37,6 @@ class getAll implements ResponseEntityInterface
      * @Assert\PositiveOrZero()
      */
     protected $purchase;
-
-    /**
-     * @var int
-     */
-    protected $lastUpdate;
-
-    /**
-     * @var string
-     * @Assert\Url()
-     */
-    protected $callUrl;
-
-    /**
-     * @return string
-     */
-    public function getStatus(): string
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param string $status
-     */
-    public function setStatus(string $status): void
-    {
-        $this->status = $status;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getInfo()
-    {
-        return $this->info;
-    }
-
-    /**
-     * @param mixed $info
-     */
-    public function setInfo($info): void
-    {
-        $this->info = $info;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getAttributes()
-    {
-        return $this->attributes;
-    }
-
-    /**
-     * @param mixed $attributes
-     */
-    public function setAttributes($attributes): void
-    {
-        $this->attributes = $attributes;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCurrency(): array
-    {
-        return $this->currency;
-    }
-
-    /**
-     * @param array $currency
-     */
-    public function setCurrency(array $currency): void
-    {
-        $this->currency = $currency;
-    }
 
     /**
      * @return mixed
@@ -176,34 +87,40 @@ class getAll implements ResponseEntityInterface
     }
 
     /**
-     * @return int
+     * @param RateCurrency $currency
+     * @return getAll
      */
-    public function getLastUpdate(): int
+    public function setCurrency(RateCurrency $currency): getAll
     {
-        return $this->lastUpdate;
+        $this->currency = $currency;
+
+        return $this;
     }
 
     /**
-     * @param int $lastUpdate
+     * @return RateCurrency
      */
-    public function setLastUpdate(int $lastUpdate): void
+    public function getCurrency(): RateCurrency
     {
-        $this->lastUpdate = $lastUpdate;
+        return $this->currency;
     }
 
     /**
-     * @return string
+     * @param RateService $service
+     * @return getAll
      */
-    public function getCallUrl(): string
+    public function setService(RateService $service): getAll
     {
-        return $this->callUrl;
+        $this->service = $service;
+
+        return $this;
     }
 
     /**
-     * @param string $callUrl
+     * @return RateService
      */
-    public function setCallUrl(string $callUrl): void
+    public function getService(): RateService
     {
-        $this->callUrl = $callUrl;
+        return $this->service;
     }
 }

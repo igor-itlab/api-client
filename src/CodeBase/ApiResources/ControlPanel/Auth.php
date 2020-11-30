@@ -3,8 +3,7 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
-
-use App\Utils\EncryptionManager;
+use ItlabStudio\ApiClient\Service\EncryptionManager;
 use ItlabStudio\ApiClient\CodeBase\AbstractAuth;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiAuthInterface;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ApiClientInterface;

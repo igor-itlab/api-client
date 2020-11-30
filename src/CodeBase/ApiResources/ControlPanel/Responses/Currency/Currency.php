@@ -4,39 +4,14 @@
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Currency;
 
 
-use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
+use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\defaults\Currency as DefaultCurrency;
 
 /**
  * Class Currency
  *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Currency
  */
-class Currency implements ResponseEntityInterface
+class Currency extends DefaultCurrency
 {
-    /**
-     * @var string
-     */
-    protected $asset;
-    /**
-     * @var string
-     */
-    protected $type;
-
-    /**
-     * @param string $asset
-     */
-    public function setAsset(string $asset): void
-    {
-        $this->asset = $asset;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType(string $type): void
-    {
-        $this->type = $type;
-    }
-
 
 }

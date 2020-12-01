@@ -67,9 +67,9 @@ class Payment extends ApiResource
      *  'currency'      => $currency,
      *  'referenceId'   => $referenceId,
      *  'connection'    => $connection,
-     *  'returnUrl'     => $returnUrl,
+     *  'returnUrl'     => $returnUrl, ?
      *  'attributes'    => $attributes,
-     *  'callUrl'       => $callUrl
+     *  'callBackUrl'   => $callBackUrl, ?
      * ]
      *
      * @param array $body

@@ -68,7 +68,7 @@ class Payout extends ApiResource
      *  'connection'    => $connection,
      *  'returnUrl'     => $returnUrl, ?
      *  'attributes'    => $attributes,
-     *  'callUrl'       => $callUrl
+     *  'callBackUrl'   => $callBackUrl, ?
      * ]
      *
      * @param array $body

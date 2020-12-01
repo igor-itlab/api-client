@@ -49,7 +49,7 @@ class setInvoice implements ResponseEntityInterface
     protected $referenceId;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $returnUrl;
 
@@ -68,7 +68,7 @@ class setInvoice implements ResponseEntityInterface
     protected $status;
 
     /**
-     * @var string
+     * @var string|null
      */
     protected $callBackUrl;
 
@@ -113,22 +113,6 @@ class setInvoice implements ResponseEntityInterface
     public function setReferenceId(string $referenceId): void
     {
         $this->referenceId = $referenceId;
-    }
-
-    /**
-     * @return string
-     */
-    public function getReturnUrl(): string
-    {
-        return $this->returnUrl;
-    }
-
-    /**
-     * @param string $returnUrl
-     */
-    public function setReturnUrl(string $returnUrl): void
-    {
-        $this->returnUrl = $returnUrl;
     }
 
     /**
@@ -240,25 +224,6 @@ class setInvoice implements ResponseEntityInterface
     }
 
     /**
-     * @param string $callBackUrl
-     * @return setInvoice
-     */
-    public function setCallBackUrl(string $callBackUrl): setInvoice
-    {
-        $this->callBackUrl = $callBackUrl;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCallBackUrl(): string
-    {
-        return $this->callBackUrl;
-    }
-
-    /**
      * @param string $status
      * @return setInvoice
      */
@@ -334,5 +299,45 @@ class setInvoice implements ResponseEntityInterface
     public function getId(): string
     {
         return $this->id;
+    }
+
+    /**
+     * @param string|null $callBackUrl
+     *
+     * @return setInvoice
+     */
+    public function setCallBackUrl(?string $callBackUrl): setInvoice
+    {
+        $this->callBackUrl = $callBackUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCallBackUrl(): ?string
+    {
+        return $this->callBackUrl;
+    }
+
+    /**
+     * @param string|null $returnUrl
+     *
+     * @return setInvoice
+     */
+    public function setReturnUrl(?string $returnUrl): setInvoice
+    {
+        $this->returnUrl = $returnUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReturnUrl(): ?string
+    {
+        return $this->returnUrl;
     }
 }

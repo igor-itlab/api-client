@@ -76,7 +76,7 @@ class Payout extends ApiResource
      *  'referenceId'   => $referenceId,
      *  'connection'    => $connection,
      *  'returnUrl'     => $returnUrl, ?
-     *  'attributes'    => $attributes,
+     *  'attributes'    => $attributes, //[['attributeName'=>'attributeValue']]
      *  'callBackUrl'   => $callBackUrl, ?
      * ]
      *
@@ -87,11 +87,34 @@ class Payout extends ApiResource
      */
     public function setInvoice(array $body = [])
     {
+        $this->withNamedAttributes($body);
+
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payouts')
                  ->withMethod(HttpRequestBuilder::$METHOD_POST)
                  ->withOptions(['json' => $this->withSignature($body)])
         );
+    }
+
+    /**
+     * convert attributes
+     * from
+     *      [['attributeName'=>'attributeValue']]
+     * to
+     *      [['name'=>'attributeName', 'value'=>'attributeValue']]
+     *
+     * @param $body
+     *
+     * @return mixed
+     */
+    protected function withNamedAttributes(&$body)
+    {
+        if (isset($body['attributes'])) {
+            foreach ($body['attributes'] as $key => $item) {
+                $substitute[] = ['name' => $key, 'value' => $item];
+            }
+            $body['attributes'] = $substitute;
+        }
     }
 
     /**

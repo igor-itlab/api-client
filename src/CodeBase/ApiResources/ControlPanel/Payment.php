@@ -37,6 +37,7 @@ class Payment extends ApiResource
 
     /**
      * @param $id
+     *
      * @return mixed
      */
     public function retryCallback($id)
@@ -47,16 +48,24 @@ class Payment extends ApiResource
     }
 
     /**
+     *  [
+     *  'paymentSystem' => $paymentSystem,
+     *  'currency'      => $currency,
+     *  'connection'    => $connection,
+     *  'locale'        => $locale ?
+     * ]
+     *
      * @param array $body
+     *
      * @return mixed
      */
     public function attributePrerequest(array $body = [])
     {
         return $this->makeRequest(
             $this->request()
-                ->withMethod(HttpRequestBuilder::$METHOD_POST)
-                ->withUrl('/api/private/payments/attribute-prerequest')
-                ->withOptions(['json' => $body])
+                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
+                 ->withUrl('/api/private/payments/attribute-prerequest')
+                 ->withOptions(['json' => $body])
         );
     }
 
@@ -80,8 +89,8 @@ class Payment extends ApiResource
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payments')
-                ->withMethod(HttpRequestBuilder::$METHOD_POST)
-                ->withOptions(['json' => $this->withSignature($body)])
+                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
+                 ->withOptions(['json' => $this->withSignature($body)])
 
         );
     }
@@ -97,12 +106,7 @@ class Payment extends ApiResource
             $body,
             [
                 'signature' => $this->getSignature(
-                    $body['paymentSystem'] . ':' . $body['amount']
-                    . ':' . $body['currency'] . ':' . $body['referenceId']
-                    . ':' . $body['connection'] . ':' .
-                    base64_encode(
-                        json_encode($body['attributes'])
-                    ),
+                    json_encode($body, JSON_UNESCAPED_SLASHES),
                     $this->client->getResourceInjector()->Auth(static::$TYPE_PRIVATE)->getSecretKey()
                 ),
             ]

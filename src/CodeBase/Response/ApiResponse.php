@@ -56,6 +56,7 @@ class ApiResponse extends Response implements \Iterator, \Countable, \Serializab
 
     /**
      * @param ResponseInterface $response
+     *
      * @return static
      * @throws \Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface
      * @throws \Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface
@@ -65,7 +66,15 @@ class ApiResponse extends Response implements \Iterator, \Countable, \Serializab
      */
     public static function createFromResponse(ResponseInterface $response)
     {
-        return (new static('', $response->toArray(), $response->getContent(), $response->getInfo(), [], $response->getStatusCode(), $response->getHeaders()));
+        return (new static(
+            '',
+            $response->getContent() ? $response->toArray() : [],
+            $response->getContent(),
+            $response->getInfo(),
+            [],
+            $response->getStatusCode(),
+            $response->getHeaders()
+        ));
     }
 
     /**

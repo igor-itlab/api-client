@@ -4,6 +4,7 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Ris
 
 
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class check
@@ -12,32 +13,57 @@ use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
  */
 class check implements ResponseEntityInterface
 {
+    /**
+     * @var string
+     * @Assert\NotNull()
+     */
+    protected $id;
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $asset;
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $address;
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $txhash;
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
-    protected $connection;
+    protected $riskScore;
 
     /**
      * @var ?array
-     * @Assert\Json()
      */
     protected $attributes;
+
+    /**
+     * @var string|null
+     */
+    protected $callBackUrl;
+
+    /**
+     * @var string
+     * @Assert\NotNull()
+     */
+    protected $status;
+
+    /**
+     * @var string
+     * @Assert\NotNull()
+     */
+    protected $connection;
 
     /**
      * @var string
@@ -141,4 +167,83 @@ class check implements ResponseEntityInterface
         $this->address = $address;
     }
 
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return check
+     */
+    public function setId(string $id): check
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRiskScore(): string
+    {
+        return $this->riskScore;
+    }
+
+    /**
+     * @param string $riskScore
+     *
+     * @return check
+     */
+    public function setRiskScore(string $riskScore): check
+    {
+        $this->riskScore = $riskScore;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     *
+     * @return check
+     */
+    public function setStatus(string $status): check
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCallBackUrl(): ?string
+    {
+        return $this->callBackUrl;
+    }
+
+    /**
+     * @param string|null $callBackUrl
+     *
+     * @return check
+     */
+    public function setCallBackUrl(?string $callBackUrl): check
+    {
+        $this->callBackUrl = $callBackUrl;
+
+        return $this;
+    }
 }

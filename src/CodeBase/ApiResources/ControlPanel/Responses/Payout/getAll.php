@@ -27,8 +27,7 @@ class getAll implements ResponseEntityInterface
     protected $processingId;
 
     /**
-     * @var array
-     * @Assert\NotNull()
+     * @var PayoutPaymentSystem
      */
     protected $paymentSystem;
 
@@ -38,16 +37,14 @@ class getAll implements ResponseEntityInterface
     protected $amount;
 
     /**
-     * @var array
-     * @Assert\NotNull()
-     */
-    protected $currency;
-
-    /**
-     * @var int
      * @Assert\PositiveOrZero()
      */
-    protected $createDate;
+    protected $processedAmount;
+
+    /**
+     * @var PayoutCurrency
+     */
+    protected $currency;
 
     /**
      * @var string
@@ -56,9 +53,18 @@ class getAll implements ResponseEntityInterface
     protected $referenceId;
 
     /**
-     * @Assert\PositiveOrZero()
+     * @var string|null
      */
-    protected $paidAmount;
+    protected $returnUrl;
+
+    /**
+     * @var PayoutConnection
+     */
+    protected $connection;
+    /**
+     * @var ?array
+     */
+    protected $attributes;
 
     /**
      * @var string
@@ -67,69 +73,20 @@ class getAll implements ResponseEntityInterface
     protected $status;
 
     /**
-     * @var ?array
-     * @Assert\Json()
+     * @var string|null
      */
-    protected $attributes;
+    protected $callBackUrl;
 
     /**
      * @var string
-     * @Assert\Url()
      */
-    protected $callUrl;
+    protected $signature;
 
     /**
      * @var ?array
      */
-    protected $info;
+    protected $flowData;
 
-    /**
-     * @return string
-     */
-    public function getId(): string
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param string $id
-     */
-    public function setId(string $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getProcessingId(): string
-    {
-        return $this->processingId;
-    }
-
-    /**
-     * @param string $processingId
-     */
-    public function setProcessingId(string $processingId): void
-    {
-        $this->processingId = $processingId;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPaymentSystem(): array
-    {
-        return $this->paymentSystem;
-    }
-
-    /**
-     * @param array $paymentSystem
-     */
-    public function setPaymentSystem(array $paymentSystem): void
-    {
-        $this->paymentSystem = $paymentSystem;
-    }
 
     /**
      * @return mixed
@@ -145,38 +102,6 @@ class getAll implements ResponseEntityInterface
     public function setAmount($amount): void
     {
         $this->amount = $amount;
-    }
-
-    /**
-     * @return array
-     */
-    public function getCurrency(): array
-    {
-        return $this->currency;
-    }
-
-    /**
-     * @param array $currency
-     */
-    public function setCurrency(array $currency): void
-    {
-        $this->currency = $currency;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCreateDate(): int
-    {
-        return $this->createDate;
-    }
-
-    /**
-     * @param int $createDate
-     */
-    public function setCreateDate(int $createDate): void
-    {
-        $this->createDate = $createDate;
     }
 
     /**
@@ -196,19 +121,115 @@ class getAll implements ResponseEntityInterface
     }
 
     /**
-     * @return mixed
+     * @return PayoutConnection
      */
-    public function getPaidAmount()
+    public function getConnection(): PayoutConnection
     {
-        return $this->paidAmount;
+        return $this->connection;
     }
 
     /**
-     * @param mixed $paidAmount
+     * @param PayoutConnection $connection
+     *
+     * @return self
      */
-    public function setPaidAmount($paidAmount): void
+    public function setConnection(PayoutConnection $connection): self
     {
-        $this->paidAmount = $paidAmount;
+        $this->connection = $connection;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param mixed $attributes
+     */
+    public function setAttributes($attributes): void
+    {
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSignature(): string
+    {
+        return $this->signature;
+    }
+
+    /**
+     * @param string $signature
+     */
+    public function setSignature(string $signature): void
+    {
+        $this->signature = $signature;
+    }
+
+    /**
+     * @return PayoutPaymentSystem
+     */
+    public function getPaymentSystem(): PayoutPaymentSystem
+    {
+        return $this->paymentSystem;
+    }
+
+    /**
+     * @param PayoutPaymentSystem $paymentSystem
+     *
+     * @return self
+     */
+    public function setPaymentSystem(PayoutPaymentSystem $paymentSystem): self
+    {
+        $this->paymentSystem = $paymentSystem;
+
+        return $this;
+    }
+
+    /**
+     * @return PayoutCurrency
+     */
+    public function getCurrency(): PayoutCurrency
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @param PayoutCurrency $currency
+     *
+     * @return self
+     */
+    public function setCurrency(PayoutCurrency $currency): self
+    {
+        $this->currency = $currency;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProcessedAmount()
+    {
+        return $this->processedAmount;
+    }
+
+    /**
+     * @param mixed $processedAmount
+     *
+     * @return self
+     */
+    public function setProcessedAmount($processedAmount)
+    {
+        $this->processedAmount = $processedAmount;
+
+        return $this;
     }
 
     /**
@@ -221,58 +242,115 @@ class getAll implements ResponseEntityInterface
 
     /**
      * @param string $status
+     *
+     * @return self
      */
-    public function setStatus(string $status): void
+    public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
     }
 
     /**
-     * @return ?array
+     * @return mixed
      */
-    public function getAttributes(): ?array
+    public function getFlowData()
     {
-        return $this->attributes;
+        return $this->flowData;
     }
 
     /**
-     * @param ?array $attributes
+     * @param array $flowData
+     *
+     * @return $this
      */
-    public function setAttributes(?array $attributes): void
+    public function setFlowData(array $flowData)
     {
-        $this->attributes = $attributes;
+        foreach ($flowData as $item) {
+            $this->flowData[$item['name']] = $item['value'];
+        }
+
+        return $this;
     }
 
     /**
      * @return string
      */
-    public function getCallUrl(): string
+    public function getProcessingId(): string
     {
-        return $this->callUrl;
+        return $this->processingId;
     }
 
     /**
-     * @param string $callUrl
+     * @param string $processingId
+     *
+     * @return self
      */
-    public function setCallUrl(string $callUrl): void
+    public function setProcessingId(string $processingId): self
     {
-        $this->callUrl = $callUrl;
+        $this->processingId = $processingId;
+
+        return $this;
     }
 
     /**
-     * @return ?array
+     * @return string
      */
-    public function getInfo(): ?array
+    public function getId(): string
     {
-        return $this->info;
+        return $this->id;
     }
 
     /**
-     * @param ?array $info
+     * @param string $id
+     *
+     * @return self
      */
-    public function setInfo(?array $info): void
+    public function setId(string $id): self
     {
-        $this->info = $info;
+        $this->id = $id;
+
+        return $this;
     }
 
+    /**
+     * @return string|null
+     */
+    public function getCallBackUrl(): ?string
+    {
+        return $this->callBackUrl;
+    }
+
+    /**
+     * @param string|null $callBackUrl
+     *
+     * @return self
+     */
+    public function setCallBackUrl(?string $callBackUrl): self
+    {
+        $this->callBackUrl = $callBackUrl;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReturnUrl(): ?string
+    {
+        return $this->returnUrl;
+    }
+
+    /**
+     * @param string|null $returnUrl
+     *
+     * @return self
+     */
+    public function setReturnUrl(?string $returnUrl): self
+    {
+        $this->returnUrl = $returnUrl;
+
+        return $this;
+    }
 }

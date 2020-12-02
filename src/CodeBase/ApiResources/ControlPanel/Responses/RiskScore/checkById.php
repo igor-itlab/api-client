@@ -5,6 +5,7 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Ris
 
 
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class checkById
@@ -13,52 +14,57 @@ use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
  */
 class checkById implements ResponseEntityInterface
 {
+    /**
+     * @var string
+     * @Assert\NotNull()
+     */
+    protected $id;
 
     /**
      * @var string
-     */
-    protected $id;
-    /**
-     * @var string
+     * @Assert\NotNull()
      */
     protected $asset;
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $address;
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $txhash;
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $riskScore;
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $status;
 
     /**
      * @var ?array
-     * @Assert\Json()
      */
     protected $attributes;
 
     /**
-     * @var string
-     * @Assert\Url()
+     * @var string|null
      */
-    protected $callUrl;
+    protected $callBackUrl;
 
     /**
-     * @var ?array
+     * @var string
+     * @Assert\NotNull()
      */
-    protected $info;
+    protected $connection;
 
     /**
      * @return string
@@ -74,22 +80,6 @@ class checkById implements ResponseEntityInterface
     public function setAsset(string $asset): void
     {
         $this->asset = $asset;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCallUrl(): string
-    {
-        return $this->callUrl;
-    }
-
-    /**
-     * @param string $callUrl
-     */
-    public function setCallUrl(string $callUrl): void
-    {
-        $this->callUrl = $callUrl;
     }
 
     /**
@@ -189,19 +179,22 @@ class checkById implements ResponseEntityInterface
     }
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getInfo()
+    public function getCallBackUrl(): ?string
     {
-        return $this->info;
+        return $this->callBackUrl;
     }
 
     /**
-     * @param mixed $info
+     * @param string|null $callBackUrl
+     *
+     * @return checkById
      */
-    public function setInfo($info): void
+    public function setCallBackUrl(?string $callBackUrl): checkById
     {
-        $this->info = $info;
-    }
+        $this->callBackUrl = $callBackUrl;
 
+        return $this;
+    }
 }

@@ -15,11 +15,13 @@ class setInvoice implements ResponseEntityInterface
 {
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $id;
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $processingId;
 
@@ -65,6 +67,7 @@ class setInvoice implements ResponseEntityInterface
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $status;
 

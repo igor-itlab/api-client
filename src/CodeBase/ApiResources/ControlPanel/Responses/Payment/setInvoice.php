@@ -8,17 +8,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class setInvoice
+ *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment
  */
 class setInvoice implements ResponseEntityInterface
 {
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $id;
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $processingId;
 
@@ -64,6 +67,7 @@ class setInvoice implements ResponseEntityInterface
 
     /**
      * @var string
+     * @Assert\NotNull()
      */
     protected $status;
 
@@ -116,7 +120,16 @@ class setInvoice implements ResponseEntityInterface
     }
 
     /**
+     * @return PaymentConnection
+     */
+    public function getConnection(): PaymentConnection
+    {
+        return $this->connection;
+    }
+
+    /**
      * @param PaymentConnection $connection
+     *
      * @return setInvoice
      */
     public function setConnection(PaymentConnection $connection): setInvoice
@@ -124,14 +137,6 @@ class setInvoice implements ResponseEntityInterface
         $this->connection = $connection;
 
         return $this;
-    }
-
-    /**
-     * @return PaymentConnection
-     */
-    public function getConnection(): PaymentConnection
-    {
-        return $this->connection;
     }
 
     /**
@@ -167,17 +172,6 @@ class setInvoice implements ResponseEntityInterface
     }
 
     /**
-     * @param PaymentPaymentSystem $paymentSystem
-     * @return setInvoice
-     */
-    public function setPaymentSystem(PaymentPaymentSystem $paymentSystem): setInvoice
-    {
-        $this->paymentSystem = $paymentSystem;
-
-        return $this;
-    }
-
-    /**
      * @return PaymentPaymentSystem
      */
     public function getPaymentSystem(): PaymentPaymentSystem
@@ -186,12 +180,13 @@ class setInvoice implements ResponseEntityInterface
     }
 
     /**
-     * @param PaymentCurrency $currency
+     * @param PaymentPaymentSystem $paymentSystem
+     *
      * @return setInvoice
      */
-    public function setCurrency(PaymentCurrency $currency): setInvoice
+    public function setPaymentSystem(PaymentPaymentSystem $paymentSystem): setInvoice
     {
-        $this->currency = $currency;
+        $this->paymentSystem = $paymentSystem;
 
         return $this;
     }
@@ -205,12 +200,13 @@ class setInvoice implements ResponseEntityInterface
     }
 
     /**
-     * @param mixed $processedAmount
+     * @param PaymentCurrency $currency
+     *
      * @return setInvoice
      */
-    public function setProcessedAmount($processedAmount)
+    public function setCurrency(PaymentCurrency $currency): setInvoice
     {
-        $this->processedAmount = $processedAmount;
+        $this->currency = $currency;
 
         return $this;
     }
@@ -224,12 +220,13 @@ class setInvoice implements ResponseEntityInterface
     }
 
     /**
-     * @param string $status
+     * @param mixed $processedAmount
+     *
      * @return setInvoice
      */
-    public function setStatus(string $status): setInvoice
+    public function setProcessedAmount($processedAmount)
     {
-        $this->status = $status;
+        $this->processedAmount = $processedAmount;
 
         return $this;
     }
@@ -243,14 +240,13 @@ class setInvoice implements ResponseEntityInterface
     }
 
     /**
-     * @param array $flowData
-     * @return $this
+     * @param string $status
+     *
+     * @return setInvoice
      */
-    public function setFlowData(array $flowData)
+    public function setStatus(string $status): setInvoice
     {
-        foreach ($flowData as $item) {
-            $this->flowData[$item['name']] = $item['value'];
-        }
+        $this->status = $status;
 
         return $this;
     }
@@ -264,12 +260,15 @@ class setInvoice implements ResponseEntityInterface
     }
 
     /**
-     * @param string $processingId
-     * @return setInvoice
+     * @param array $flowData
+     *
+     * @return $this
      */
-    public function setProcessingId(string $processingId): setInvoice
+    public function setFlowData(array $flowData)
     {
-        $this->processingId = $processingId;
+        foreach ($flowData as $item) {
+            $this->flowData[$item['name']] = $item['value'];
+        }
 
         return $this;
     }
@@ -283,12 +282,13 @@ class setInvoice implements ResponseEntityInterface
     }
 
     /**
-     * @param string $id
+     * @param string $processingId
+     *
      * @return setInvoice
      */
-    public function setId(string $id): setInvoice
+    public function setProcessingId(string $processingId): setInvoice
     {
-        $this->id = $id;
+        $this->processingId = $processingId;
 
         return $this;
     }
@@ -299,6 +299,26 @@ class setInvoice implements ResponseEntityInterface
     public function getId(): string
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return setInvoice
+     */
+    public function setId(string $id): setInvoice
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCallBackUrl(): ?string
+    {
+        return $this->callBackUrl;
     }
 
     /**
@@ -316,9 +336,9 @@ class setInvoice implements ResponseEntityInterface
     /**
      * @return string|null
      */
-    public function getCallBackUrl(): ?string
+    public function getReturnUrl(): ?string
     {
-        return $this->callBackUrl;
+        return $this->returnUrl;
     }
 
     /**
@@ -331,13 +351,5 @@ class setInvoice implements ResponseEntityInterface
         $this->returnUrl = $returnUrl;
 
         return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getReturnUrl(): ?string
-    {
-        return $this->returnUrl;
     }
 }

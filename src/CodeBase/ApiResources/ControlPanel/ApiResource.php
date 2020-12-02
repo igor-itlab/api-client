@@ -20,11 +20,11 @@ class ApiResource extends AbstractApiResource implements ApiAuthorizationInterfa
      *
      * @return mixed
      */
-    public function getSignature($requestString, $key)
+    public function getSignature($requestString, $projectKey)
     {
         return EncryptionManager::encodeSignature(
             $requestString,
-            $this->client->getResourceInjector()->Auth(static::$TYPE_PRIVATE)->getSecretKey()
+            $projectKey
         );
     }
 

@@ -13,6 +13,6 @@ interface ApiAuthorizationInterface
 
     function auth($type);
 
-    function getSignature($requestString, $key);
+    function getSignature($requestString, $projectKey);
 
 }

@@ -41,27 +41,30 @@ class getAll implements ResponseEntityInterface
     protected $accessToken;
 
     /**
+     * @var ?array
+     */
+    protected $attributes;
+
+    /**
+     * @var string
+     */
+    protected $callBackUrl;
+
+    /**
      * @var string
      * @Assert\NotNull()
      */
     protected $status;
 
     /**
-     * @var string
-     * @Assert\Json()
+     * @var VerifyConnection $connection
      */
-    protected $attributes;
-
-    /**
-     * @var string
-     * @Assert\Url()
-     */
-    protected $callUrl;
+    protected $connection;
 
     /**
      * @var array
      */
-    protected $info;
+    protected $flowData;
 
     /**
      * @return string
@@ -73,10 +76,14 @@ class getAll implements ResponseEntityInterface
 
     /**
      * @param string $id
+     *
+     * @return getAll
      */
-    public function setId(string $id): void
+    public function setId(string $id): getAll
     {
         $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -89,10 +96,14 @@ class getAll implements ResponseEntityInterface
 
     /**
      * @param string $email
+     *
+     * @return getAll
      */
-    public function setEmail(string $email): void
+    public function setEmail(string $email): getAll
     {
         $this->email = $email;
+
+        return $this;
     }
 
     /**
@@ -105,10 +116,14 @@ class getAll implements ResponseEntityInterface
 
     /**
      * @param string $applicantId
+     *
+     * @return getAll
      */
-    public function setApplicantId(string $applicantId): void
+    public function setApplicantId(string $applicantId): getAll
     {
         $this->applicantId = $applicantId;
+
+        return $this;
     }
 
     /**
@@ -121,10 +136,54 @@ class getAll implements ResponseEntityInterface
 
     /**
      * @param string $accessToken
+     *
+     * @return getAll
      */
-    public function setAccessToken(string $accessToken): void
+    public function setAccessToken(string $accessToken): getAll
     {
         $this->accessToken = $accessToken;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAttributes()
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param mixed $attributes
+     *
+     * @return getAll
+     */
+    public function setAttributes($attributes)
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCallBackUrl(): string
+    {
+        return $this->callBackUrl;
+    }
+
+    /**
+     * @param string $callBackUrl
+     *
+     * @return getAll
+     */
+    public function setCallBackUrl(string $callBackUrl): getAll
+    {
+        $this->callBackUrl = $callBackUrl;
+
+        return $this;
     }
 
     /**
@@ -137,58 +196,53 @@ class getAll implements ResponseEntityInterface
 
     /**
      * @param string $status
+     *
+     * @return getAll
      */
-    public function setStatus(string $status): void
+    public function setStatus(string $status): getAll
     {
         $this->status = $status;
+
+        return $this;
     }
 
     /**
-     * @return string
+     * @return VerifyConnection
      */
-    public function getAttributes(): string
+    public function getConnection(): VerifyConnection
     {
-        return $this->attributes;
+        return $this->connection;
     }
 
     /**
-     * @param string $attributes
+     * @param VerifyConnection $connection
+     *
+     * @return getAll
      */
-    public function setAttributes(string $attributes): void
+    public function setConnection(VerifyConnection $connection): getAll
     {
-        $this->attributes = $attributes;
-    }
+        $this->connection = $connection;
 
-    /**
-     * @return string
-     */
-    public function getCallUrl(): string
-    {
-        return $this->callUrl;
-    }
-
-    /**
-     * @param string $callUrl
-     */
-    public function setCallUrl(string $callUrl): void
-    {
-        $this->callUrl = $callUrl;
+        return $this;
     }
 
     /**
      * @return array
      */
-    public function getInfo(): array
+    public function getFlowData(): array
     {
-        return $this->info;
+        return $this->flowData;
     }
 
     /**
-     * @param array $info
+     * @param array $flowData
+     *
+     * @return getAll
      */
-    public function setInfo(array $info): void
+    public function setFlowData(array $flowData): getAll
     {
-        $this->info = $info;
-    }
+        $this->flowData = $flowData;
 
+        return $this;
+    }
 }

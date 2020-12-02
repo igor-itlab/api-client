@@ -5,6 +5,7 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 
 use ItlabStudio\ApiClient\CodeBase\Builders\HttpRequestBuilder;
+use ItlabStudio\ApiClient\Service\EncryptionManager;
 
 /**
  * Class Payment
@@ -102,14 +103,9 @@ class Payment extends ApiResource
      */
     protected function withSignature($body)
     {
-        return array_merge(
+        return EncryptionManager::withSignature(
             $body,
-            [
-                'signature' => $this->getSignature(
-                    json_encode($body, JSON_UNESCAPED_SLASHES),
-                    $this->client->getResourceInjector()->Auth(static::$TYPE_PRIVATE)->getSecretKey()
-                ),
-            ]
+            $this->client->getResourceInjector()->Auth(static::$TYPE_PRIVATE)->getSecretKey()
         );
     }
 }

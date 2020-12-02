@@ -12,13 +12,33 @@ use Jose\Component\Signature\Serializer\CompactSerializer;
 
 /**
  * Class EncryptionManager
+ *
  * @package ItlabStudio\ApiClient\Service
  */
 class EncryptionManager
 {
     /**
+     * @param $body
+     *
+     * @return array
+     */
+    public static function withSignature($body, $projectKey)
+    {
+        return array_merge(
+            $body,
+            [
+                'signature' => self::encodeSignature(
+                    json_encode($body, JSON_UNESCAPED_SLASHES),
+                    $projectKey
+                ),
+            ]
+        );
+    }
+
+    /**
      * @param string $data
      * @param string $key
+     *
      * @return string
      */
     public static function encodeSignature(string $data, string $key): string
@@ -28,9 +48,10 @@ class EncryptionManager
 
     /**
      * @param string $projectId
-     * @param int $iat
-     * @param int $exp
+     * @param int    $iat
+     * @param int    $exp
      * @param string $key
+     *
      * @return string
      */
     public static function encodeJWS(string $projectId, int $iat, int $exp, string $key): string
@@ -39,7 +60,7 @@ class EncryptionManager
             [
                 'projectId' => $projectId,
                 'iat'       => $iat,
-                'exp'       => $exp
+                'exp'       => $exp,
             ],
             $key
         );
@@ -48,6 +69,7 @@ class EncryptionManager
     /**
      * @param string $controlPanelID
      * @param string $controlPanelSecret
+     *
      * @return string
      * @throws \JsonException
      */
@@ -59,7 +81,7 @@ class EncryptionManager
             $controlPanelSecret, // The shared secret
             [
                 'alg' => 'HS256',
-                'use' => 'sig'
+                'use' => 'sig',
             ]
         );
 
@@ -69,12 +91,12 @@ class EncryptionManager
             [
                 "projectId" => $controlPanelID,
                 'iat'       => time(),
-                'exp'       => time() + 3600
+                'exp'       => time() + 3600,
             ],
             JSON_THROW_ON_ERROR
         );
 
-        $jws = $jwsBuilder
+        $jws        = $jwsBuilder
             ->create()                               // We want to create a new JWS
             ->withPayload($payload)                  // We set the payload
             ->addSignature($jwk, ['alg' => 'HS256']) // We add a signature with a simple protected header

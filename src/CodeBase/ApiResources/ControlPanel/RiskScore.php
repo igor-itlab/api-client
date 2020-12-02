@@ -3,6 +3,8 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
+use ItlabStudio\ApiClient\CodeBase\Builders\HttpRequestBuilder;
+
 /**
  * Class RiskScore
  *
@@ -50,6 +52,7 @@ class RiskScore extends ApiResource
     {
         return $this->makeRequest(
             $this->request()
+                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
                  ->withUrl('api/private/risk_scores')
                  ->withOptions(['json' => $body])
         );

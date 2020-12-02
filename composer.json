@@ -2,7 +2,7 @@
   "name": "itlab-studio/api-client",
   "type": "library",
   "description": "Library for api call with different resources",
-  "version": "2.0.7.9",
+  "version": "2.0.8",
   "keywords": ["api", "resource"],
   "homepage": "https://itlab-studio.com/",
   "license": "MIT",

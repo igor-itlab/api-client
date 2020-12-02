@@ -241,7 +241,9 @@ class getAll implements ResponseEntityInterface
      */
     public function setFlowData(array $flowData): getAll
     {
-        $this->flowData = $flowData;
+        foreach ($flowData as $item) {
+            $this->flowData[$item['name']] = $item['value'];
+        }
 
         return $this;
     }

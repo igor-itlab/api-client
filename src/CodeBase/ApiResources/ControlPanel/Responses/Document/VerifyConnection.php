@@ -3,6 +3,7 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Document;
 
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class VerifyConnection
  *

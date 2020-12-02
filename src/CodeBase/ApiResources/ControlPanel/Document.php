@@ -49,8 +49,10 @@ class Document extends ApiResource
     public function verify(array $body = [])
     {
         return $this->makeRequest(
-            $this->request()->withUrl('api/private/documents')
+            $this->request()
+                 ->withUrl('api/private/documents')
                  ->withMethod(HttpRequestBuilder::$METHOD_POST)
+                 ->withOptions(['json' => $body])
         );
     }
 }

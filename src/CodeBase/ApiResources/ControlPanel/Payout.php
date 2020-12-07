@@ -3,6 +3,7 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
+use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Service\AttributeService;
 use ItlabStudio\ApiClient\CodeBase\Builders\HttpRequestBuilder;
 use ItlabStudio\ApiClient\Service\EncryptionManager;
 
@@ -77,45 +78,27 @@ class Payout extends ApiResource
      *  'referenceId'   => $referenceId,
      *  'connection'    => $connection,
      *  'returnUrl'     => $returnUrl, ?
-     *  'attributes'    => $attributes, //[['attributeName'=>'attributeValue']]
+     *  'attributes'    => $attributes, //['attributeName'=>'attributeValue']
      *  'callBackUrl'   => $callBackUrl, ?
      * ]
      *
      * @param array $body
+     * @param bool  $convertAttr
      *
-     * @TODO fix json option
      * @return mixed
+     * @TODO fix json option
      */
-    public function setInvoice(array $body = [])
+    public function setInvoice(array $body = [], bool $convertAttr = true)
     {
-        $this->withNamedAttributes($body);
+        if ($convertAttr) {
+            AttributeService::convertAttributesToNamed($body);
+        }
 
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payouts')
                  ->withMethod(HttpRequestBuilder::$METHOD_POST)
                  ->withOptions(['json' => $this->withSignature($body)])
         );
-    }
-
-    /**
-     * convert attributes
-     * from
-     *      [['attributeName'=>'attributeValue']]
-     * to
-     *      [['name'=>'attributeName', 'value'=>'attributeValue']]
-     *
-     * @param $body
-     *
-     * @return mixed
-     */
-    protected function withNamedAttributes(&$body)
-    {
-        if (isset($body['attributes'])) {
-            foreach ($body['attributes'] as $key => $item) {
-                $substitute[] = ['name' => $key, 'value' => $item];
-            }
-            $body['attributes'] = $substitute;
-        }
     }
 
     /**

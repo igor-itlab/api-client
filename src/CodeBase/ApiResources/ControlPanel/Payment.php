@@ -4,6 +4,7 @@
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel;
 
 
+use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Service\AttributeService;
 use ItlabStudio\ApiClient\CodeBase\Builders\HttpRequestBuilder;
 use ItlabStudio\ApiClient\Service\EncryptionManager;
 
@@ -78,16 +79,21 @@ class Payment extends ApiResource
      *  'referenceId'   => $referenceId,
      *  'connection'    => $connection,
      *  'returnUrl'     => $returnUrl, ?
-     *  'attributes'    => $attributes,
+     *  'attributes'    => $attributes, //['attributeName'=>'attributeValue']
      *  'callBackUrl'   => $callBackUrl, ?
      * ]
      *
      * @param array $body
+     * @param bool  $convertAttr
      *
      * @return mixed
      */
-    public function setInvoice(array $body = [])
+    public function setInvoice(array $body = [], bool $convertAttr = true)
     {
+        if ($convertAttr) {
+            AttributeService::convertAttributesToNamed($body);
+        }
+
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payments')
                  ->withMethod(HttpRequestBuilder::$METHOD_POST)

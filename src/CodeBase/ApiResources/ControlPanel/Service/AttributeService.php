@@ -23,7 +23,8 @@ class AttributeService
      */
     public static function convertAttributesToNamed(&$body)
     {
-        if (isset($body['attributes'])) {
+        if (isset($body['attributes']) && is_array($body['attributes'])) {
+            $substitute = [];
             foreach ($body['attributes'] as $key => $item) {
                 $substitute[] = ['name' => $key, 'value' => $item];
             }

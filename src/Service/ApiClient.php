@@ -115,7 +115,8 @@ class ApiClient implements ApiClientInterface
             $requestFailed = new RequestFailedEvent(
                 $this->resolvedResource,
                 $requestBuilder,
-                $exception
+                $exception,
+                $exception->getResponse()
             );
 
             $this->eventDispatcher->dispatch(

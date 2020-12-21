@@ -66,6 +66,14 @@ class RequestFailedEvent extends Event
     }
 
     /**
+     * @param $response
+     */
+    public function setResponse($response)
+    {
+        $this->response = $response;
+    }
+
+    /**
      * @return Exception
      */
     public function getException(): Exception

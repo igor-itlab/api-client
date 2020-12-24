@@ -9,6 +9,7 @@ use Jose\Component\KeyManagement\JWKFactory;
 use Jose\Component\Signature\Algorithm\HS256;
 use Jose\Component\Signature\JWSBuilder;
 use Jose\Component\Signature\Serializer\CompactSerializer;
+use JsonException;
 
 /**
  * Class EncryptionManager
@@ -47,6 +48,26 @@ class EncryptionManager
     }
 
     /**
+     * @param        $data
+     * @param string $signature
+     * @param string $key
+     *
+     * @return bool
+     */
+    public static function checkSignature($data, string $signature, string $key)
+    {
+        try {
+            return
+                self::encodeSignature(
+                    json_encode($data, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES),
+                    $key
+                ) === $signature;
+        } catch (JsonException $e) {
+            return false;
+        }
+    }
+
+    /**
      * @param string $projectId
      * @param int    $iat
      * @param int    $exp
@@ -71,7 +92,7 @@ class EncryptionManager
      * @param string $controlPanelSecret
      *
      * @return string
-     * @throws \JsonException
+     * @throws JsonException
      */
     public static function encodeSecretKey(string $controlPanelID, string $controlPanelSecret): string
     {

@@ -29,8 +29,7 @@ class getAll implements ResponseEntityInterface
     protected $email;
 
     /**
-     * @var string
-     * @Assert\NotNull()
+     * @var string|null
      */
     protected $applicantId;
 
@@ -102,26 +101,6 @@ class getAll implements ResponseEntityInterface
     public function setEmail(string $email): getAll
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getApplicantId(): string
-    {
-        return $this->applicantId;
-    }
-
-    /**
-     * @param string $applicantId
-     *
-     * @return getAll
-     */
-    public function setApplicantId(string $applicantId): getAll
-    {
-        $this->applicantId = $applicantId;
 
         return $this;
     }
@@ -244,6 +223,26 @@ class getAll implements ResponseEntityInterface
         foreach ($flowData as $item) {
             $this->flowData[$item['name']] = $item['value'];
         }
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getApplicantId(): ?string
+    {
+        return $this->applicantId;
+    }
+
+    /**
+     * @param string|null $applicantId
+     *
+     * @return getAll
+     */
+    public function setApplicantId(?string $applicantId): getAll
+    {
+        $this->applicantId = $applicantId;
 
         return $this;
     }

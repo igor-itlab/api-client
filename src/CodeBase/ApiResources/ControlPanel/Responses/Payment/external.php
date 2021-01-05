@@ -6,7 +6,6 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Pay
 
 use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External\MiccCities;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External\MiccNetwork;
 
 /**
@@ -28,7 +27,16 @@ class external implements ResponseEntityInterface
     protected array $cities;
 
     /**
+     * @return MiccNetwork
+     */
+    public function getNetwork(): MiccNetwork
+    {
+        return $this->network;
+    }
+
+    /**
      * @param MiccNetwork $network
+     *
      * @return external
      */
     public function setNetwork(MiccNetwork $network): external
@@ -39,15 +47,16 @@ class external implements ResponseEntityInterface
     }
 
     /**
-     * @return MiccNetwork
+     * @return MiccCities[]
      */
-    public function getNetwork(): MiccNetwork
+    public function getCities(): array
     {
-        return $this->network;
+        return $this->cities;
     }
 
     /**
      * @param MiccCities[] $cities
+     *
      * @return external
      */
     public function setCities(array $cities): external
@@ -55,13 +64,5 @@ class external implements ResponseEntityInterface
         $this->cities = $cities;
 
         return $this;
-    }
-
-    /**
-     * @return MiccCities[]
-     */
-    public function getCities(): array
-    {
-        return $this->cities;
     }
 }

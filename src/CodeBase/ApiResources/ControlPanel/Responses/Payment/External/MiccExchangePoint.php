@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class MiccExchangePoint
+ *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External
  */
 class MiccExchangePoint
@@ -31,18 +32,6 @@ class MiccExchangePoint
      */
     protected $address;
 
-
-    /**
-     * @param string|null $name
-     * @return MiccExchangePoint
-     */
-    public function setName(?string $name): MiccExchangePoint
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     /**
      * @return string|null
      */
@@ -52,12 +41,13 @@ class MiccExchangePoint
     }
 
     /**
-     * @param string|null $description
+     * @param string|null $name
+     *
      * @return MiccExchangePoint
      */
-    public function setDescription(?string $description): MiccExchangePoint
+    public function setName(?string $name): MiccExchangePoint
     {
-        $this->description = $description;
+        $this->name = $name;
 
         return $this;
     }
@@ -71,12 +61,13 @@ class MiccExchangePoint
     }
 
     /**
-     * @param string|null $address
+     * @param string|null $description
+     *
      * @return MiccExchangePoint
      */
-    public function setAddress(?string $address): MiccExchangePoint
+    public function setDescription(?string $description): MiccExchangePoint
     {
-        $this->address = $address;
+        $this->description = $description;
 
         return $this;
     }
@@ -90,12 +81,13 @@ class MiccExchangePoint
     }
 
     /**
-     * @param mixed $id
+     * @param string|null $address
+     *
      * @return MiccExchangePoint
      */
-    public function setId($id)
+    public function setAddress(?string $address): MiccExchangePoint
     {
-        $this->id = $id;
+        $this->address = $address;
 
         return $this;
     }
@@ -106,5 +98,17 @@ class MiccExchangePoint
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     *
+     * @return MiccExchangePoint
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 }

@@ -113,7 +113,7 @@ class Payout extends ApiResource
             $this->client->getResourceInjector()->Auth(static::$TYPE_PRIVATE)->getSecretKey()
         );
     }
-    
+
     /**
      * [
      * "paymentSystem"=> "VISA",
@@ -128,8 +128,8 @@ class Payout extends ApiResource
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payments/external')
-                ->withMethod(HttpRequestBuilder::$METHOD_POST)
-                ->withOptions(['json' => $body])
+                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
+                 ->withOptions(['json' => $body])
         );
     }
 }

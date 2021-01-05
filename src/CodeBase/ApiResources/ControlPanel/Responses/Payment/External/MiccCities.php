@@ -5,6 +5,7 @@ namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Pay
 
 /**
  * Class MiccCities
+ *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External
  */
 class MiccCities
@@ -25,17 +26,6 @@ class MiccCities
     protected ?array $cashiers;
 
     /**
-     * @param MiccCity $city
-     * @return MiccCities
-     */
-    public function setCity(MiccCity $city): MiccCities
-    {
-        $this->city = $city;
-
-        return $this;
-    }
-
-    /**
      * @return MiccCity
      */
     public function getCity(): MiccCity
@@ -44,12 +34,13 @@ class MiccCities
     }
 
     /**
-     * @param MiccCashiers[]|null $cashiers
+     * @param MiccCity $city
+     *
      * @return MiccCities
      */
-    public function setCashiers(?array $cashiers): MiccCities
+    public function setCity(MiccCity $city): MiccCities
     {
-        $this->cashiers = $cashiers;
+        $this->city = $city;
 
         return $this;
     }
@@ -63,15 +54,8 @@ class MiccCities
     }
 
     /**
-     * @return MiccCashiers[]|null
-     */
-    public function getCashiers(): ?array
-    {
-        return $this->cashiers;
-    }
-
-    /**
      * @param MiccExchangePoint[]|null $exchangePoints
+     *
      * @return MiccCities
      */
     public function setExchangePoints(?array $exchangePoints): MiccCities
@@ -81,4 +65,23 @@ class MiccCities
         return $this;
     }
 
+    /**
+     * @return MiccCashiers[]|null
+     */
+    public function getCashiers(): ?array
+    {
+        return $this->cashiers;
+    }
+
+    /**
+     * @param MiccCashiers[]|null $cashiers
+     *
+     * @return MiccCities
+     */
+    public function setCashiers(?array $cashiers): MiccCities
+    {
+        $this->cashiers = $cashiers;
+
+        return $this;
+    }
 }

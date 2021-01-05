@@ -6,6 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class MiccNetwork
+ *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External
  */
 class MiccNetwork
@@ -35,22 +36,12 @@ class MiccNetwork
 
     /**
      * @param mixed $id
+     *
      * @return MiccNetwork
      */
     public function setId($id)
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @param string|null $name
-     * @return MiccNetwork
-     */
-    public function setName(?string $name): MiccNetwork
-    {
-        $this->name = $name;
 
         return $this;
     }
@@ -64,12 +55,13 @@ class MiccNetwork
     }
 
     /**
-     * @param array|null $currencies
+     * @param string|null $name
+     *
      * @return MiccNetwork
      */
-    public function setCurrencies(?array $currencies): MiccNetwork
+    public function setName(?string $name): MiccNetwork
     {
-        $this->currencies = $currencies;
+        $this->name = $name;
 
         return $this;
     }
@@ -83,12 +75,13 @@ class MiccNetwork
     }
 
     /**
-     * @param array|null $attributes
+     * @param array|null $currencies
+     *
      * @return MiccNetwork
      */
-    public function setAttributes(?array $attributes): MiccNetwork
+    public function setCurrencies(?array $currencies): MiccNetwork
     {
-        $this->attributes = $attributes;
+        $this->currencies = $currencies;
 
         return $this;
     }
@@ -99,5 +92,17 @@ class MiccNetwork
     public function getAttributes(): ?array
     {
         return $this->attributes;
+    }
+
+    /**
+     * @param array|null $attributes
+     *
+     * @return MiccNetwork
+     */
+    public function setAttributes(?array $attributes): MiccNetwork
+    {
+        $this->attributes = $attributes;
+
+        return $this;
     }
 }

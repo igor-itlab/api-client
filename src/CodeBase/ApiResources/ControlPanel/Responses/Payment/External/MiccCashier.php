@@ -3,10 +3,9 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External;
 
-use Symfony\Component\Validator\Constraints as Assert;
-
 /**
  * Class MiccCashiers
+ *
  * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External
  */
 class MiccCashier
@@ -28,17 +27,6 @@ class MiccCashier
     protected $email;
 
     /**
-     * @param string|null $firstname
-     * @return MiccCashier
-     */
-    public function setFirstname(?string $firstname): MiccCashier
-    {
-        $this->firstname = $firstname;
-
-        return $this;
-    }
-
-    /**
      * @return string|null
      */
     public function getFirstname(): ?string
@@ -47,12 +35,13 @@ class MiccCashier
     }
 
     /**
-     * @param string|null $lastname
+     * @param string|null $firstname
+     *
      * @return MiccCashier
      */
-    public function setLastname(?string $lastname): MiccCashier
+    public function setFirstname(?string $firstname): MiccCashier
     {
-        $this->lastname = $lastname;
+        $this->firstname = $firstname;
 
         return $this;
     }
@@ -66,12 +55,13 @@ class MiccCashier
     }
 
     /**
-     * @param string|null $email
+     * @param string|null $lastname
+     *
      * @return MiccCashier
      */
-    public function setEmail(?string $email): MiccCashier
+    public function setLastname(?string $lastname): MiccCashier
     {
-        $this->email = $email;
+        $this->lastname = $lastname;
 
         return $this;
     }
@@ -84,4 +74,15 @@ class MiccCashier
         return $this->email;
     }
 
+    /**
+     * @param string|null $email
+     *
+     * @return MiccCashier
+     */
+    public function setEmail(?string $email): MiccCashier
+    {
+        $this->email = $email;
+
+        return $this;
+    }
 }

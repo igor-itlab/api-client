@@ -129,8 +129,8 @@ class Payment extends ApiResource
     {
         return $this->makeRequest(
             $this->request()->withUrl('api/private/payments/external')
-                ->withMethod(HttpRequestBuilder::$METHOD_POST)
-                ->withOptions(['json' => $body])
+                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
+                 ->withOptions(['json' => $body])
         );
     }
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External;
+namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payout\External;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class MiccNetwork
  *
- * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External
+ * @package ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payout\External
  */
 class MiccNetwork
 {

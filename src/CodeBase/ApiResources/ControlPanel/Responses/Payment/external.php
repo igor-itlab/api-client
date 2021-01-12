@@ -3,10 +3,9 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment;
 
-
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External\MiccCities;
+use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External\ExternalNetworks;
+use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External\MiccCity;
 use ItlabStudio\ApiClient\CodeBase\Interfaces\ResponseEntityInterface;
-use ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External\MiccNetwork;
 
 /**
  * Class external
@@ -17,52 +16,53 @@ class external implements ResponseEntityInterface
 {
 
     /**
-     * @var MiccNetwork
+     * @var ExternalNetworks[] $data
      */
-    protected MiccNetwork $network;
+    protected array $data;
 
     /**
-     * @var MiccCities[] $cities
+     * @var MiccCity[] $fetchingCities
      */
-    protected array $cities;
+    protected array $fetchingCities;
 
     /**
-     * @return MiccNetwork
+     * @return array
      */
-    public function getNetwork(): MiccNetwork
+    public function getData(): array
     {
-        return $this->network;
+        return $this->data;
     }
 
     /**
-     * @param MiccNetwork $network
+     * @param array $data
      *
      * @return external
      */
-    public function setNetwork(MiccNetwork $network): external
+    public function setData(array $data): external
     {
-        $this->network = $network;
+        $this->data = $data;
 
         return $this;
     }
 
     /**
-     * @return MiccCities[]
+     * @return MiccCity[]
      */
-    public function getCities(): array
+    public function getFetchingCities(): array
     {
-        return $this->cities;
+        return $this->fetchingCities;
     }
 
     /**
-     * @param MiccCities[] $cities
+     * @param MiccCity[] $fetchingCities
      *
      * @return external
      */
-    public function setCities(array $cities): external
+    public function setFetchingCities(array $fetchingCities): external
     {
-        $this->cities = $cities;
+        $this->fetchingCities = $fetchingCities;
 
         return $this;
     }
+
 }

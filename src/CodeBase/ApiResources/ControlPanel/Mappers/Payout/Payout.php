@@ -25,6 +25,14 @@ class Payout extends AbstractMapper implements ResponseMapperInterface
     /**
      * @return array
      */
+    public function external()
+    {
+        return $this->buildRelations(__FUNCTION__, [$this->data]);
+    }
+
+    /**
+     * @return array
+     */
     public function relations()
     {
         return [];

@@ -24,7 +24,7 @@ class MiccCity
     /**
      * @var string|null
      */
-    protected $transliteName;
+    protected $translateName;
 
     /**
      * @return string|null
@@ -49,19 +49,19 @@ class MiccCity
     /**
      * @return string|null
      */
-    public function getTransliteName(): ?string
+    public function getTranslateName(): ?string
     {
-        return $this->transliteName;
+        return $this->translateName;
     }
 
     /**
-     * @param string|null $transliteName
+     * @param string|null $translateName
      *
      * @return MiccCity
      */
-    public function setTransliteName(?string $transliteName): MiccCity
+    public function setTranslateName(?string $translateName): MiccCity
     {
-        $this->transliteName = $transliteName;
+        $this->translateName = $translateName;
 
         return $this;
     }

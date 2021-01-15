@@ -127,7 +127,26 @@ class Payout extends ApiResource
     public function external($body)
     {
         return $this->makeRequest(
-            $this->request()->withUrl('api/private/payments/external')
+            $this->request()->withUrl('api/private/payouts/external')
+                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
+                 ->withOptions(['json' => $body])
+        );
+    }
+
+    /**
+     * [
+     *      "paymentSystem": "VISA",
+     *      "currency": "USD",
+     *      "connection": "28e121a0-6107-4d44-a674-f2bd68e856f8"
+     * ]
+     * @param $body
+     *
+     * @return mixed
+     */
+    public function verification($body)
+    {
+        return $this->makeRequest(
+            $this->request()->withUrl('/api/private/payouts/verification')
                  ->withMethod(HttpRequestBuilder::$METHOD_POST)
                  ->withOptions(['json' => $body])
         );

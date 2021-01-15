@@ -33,6 +33,14 @@ class Payment extends AbstractMapper implements ResponseMapperInterface
     /**
      * @return array
      */
+    public function verification()
+    {
+        return $this->buildRelations(__FUNCTION__, [$this->data]);
+    }
+
+    /**
+     * @return array
+     */
     public function relations()
     {
         return [];

@@ -133,4 +133,23 @@ class Payment extends ApiResource
                  ->withOptions(['json' => $body])
         );
     }
+
+    /**
+     * [
+     *      "paymentSystem": "VISA",
+     *      "currency": "USD",
+     *      "connection": "28e121a0-6107-4d44-a674-f2bd68e856f8"
+     * ]
+     * @param $body
+     *
+     * @return mixed
+     */
+    public function verification($body)
+    {
+        return $this->makeRequest(
+            $this->request()->withUrl('/api/private/payments/verification')
+                 ->withMethod(HttpRequestBuilder::$METHOD_POST)
+                 ->withOptions(['json' => $body])
+        );
+    }
 }

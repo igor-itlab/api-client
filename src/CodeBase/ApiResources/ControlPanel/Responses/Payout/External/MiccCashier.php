@@ -12,6 +12,11 @@ class MiccCashier
 {
 
     /**
+     * @Assert\NotNull()
+     */
+    protected $id;
+
+    /**
      * @var string|null
      */
     protected $firstname;
@@ -82,6 +87,26 @@ class MiccCashier
     public function setEmail(?string $email): MiccCashier
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     *
+     * @return MiccCashier
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
 
         return $this;
     }

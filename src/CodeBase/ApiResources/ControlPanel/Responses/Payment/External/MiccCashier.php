@@ -3,6 +3,7 @@
 
 namespace ItlabStudio\ApiClient\CodeBase\ApiResources\ControlPanel\Responses\Payment\External;
 
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class MiccCashiers
  *

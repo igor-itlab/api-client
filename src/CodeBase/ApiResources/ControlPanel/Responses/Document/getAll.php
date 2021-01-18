@@ -40,6 +40,11 @@ class getAll implements ResponseEntityInterface
     protected $accessToken;
 
     /**
+     * @var string|null
+     */
+    protected $flow;
+
+    /**
      * @var ?array
      */
     protected $attributes;
@@ -243,6 +248,26 @@ class getAll implements ResponseEntityInterface
     public function setApplicantId(?string $applicantId): getAll
     {
         $this->applicantId = $applicantId;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFlow(): ?string
+    {
+        return $this->flow;
+    }
+
+    /**
+     * @param string|null $flow
+     *
+     * @return getAll
+     */
+    public function setFlow(?string $flow): getAll
+    {
+        $this->flow = $flow;
 
         return $this;
     }

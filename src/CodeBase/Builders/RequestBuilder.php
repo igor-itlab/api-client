@@ -251,6 +251,14 @@ class RequestBuilder implements RequestBuilderInterface
     /**
      * @return string
      */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @return string
+     */
     public function getUri(): string
     {
         return $this->uri;

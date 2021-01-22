@@ -252,6 +252,14 @@ class HttpRequestBuilder implements HttpRequestBuilderInterface, RequestBuilderI
     /**
      * @return string
      */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @return string
+     */
     public function getUri(): string
     {
         return $this->uri;

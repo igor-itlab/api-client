@@ -24,6 +24,11 @@ class MiccNetwork
     protected $name;
 
     /**
+     * @var string|null
+     */
+    protected $type;
+
+    /**
      * @var array|null
      */
     protected $currencies;
@@ -52,6 +57,22 @@ class MiccNetwork
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string|null $type
+     */
+    public function setType(?string $type): void
+    {
+        $this->type = $type;
     }
 
     /**

@@ -25,11 +25,17 @@ class EncryptionManager
      */
     public static function withSignature($body, $projectKey)
     {
+        $signatureData = $body;
+
+        if (isset($signatureData['note'])) {
+            unset($signatureData['note']);
+        }
+
         return array_merge(
             $body,
             [
                 'signature' => self::encodeSignature(
-                    json_encode($body, JSON_UNESCAPED_SLASHES),
+                    json_encode($signatureData, JSON_UNESCAPED_SLASHES),
                     $projectKey
                 ),
             ]

@@ -27,10 +27,10 @@
     }
   ],
   "require": {
-    "php": "^7.3",
+    "php": ">=7.1.0",
     "ext-json": "*",
-    "web-token/jwt-framework": "^2.1",
-    "web-token/jwt-signature": "^2.1"
+    "web-token/jwt-framework": "*",
+    "web-token/jwt-signature": "*"
   },
   "autoload": {
     "psr-4": { "ItlabStudio\\ApiClient\\": "src/" }

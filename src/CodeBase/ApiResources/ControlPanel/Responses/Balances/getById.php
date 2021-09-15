@@ -31,6 +31,12 @@ class getById implements ResponseEntityInterface
     protected $serviceName;
 
     /**
+     * @var string
+     * @Assert\NotNull
+     */
+    protected $currencyAsset;
+
+    /**
      * @return string
      */
     public function getId(): string
@@ -76,6 +82,22 @@ class getById implements ResponseEntityInterface
     public function setServiceName(string $serviceName): void
     {
         $this->serviceName = $serviceName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrencyAsset(): string
+    {
+        return $this->currencyAsset;
+    }
+
+    /**
+     * @param string $currencyAsset
+     */
+    public function setCurrencyAsset(string $currencyAsset): void
+    {
+        $this->currencyAsset = $currencyAsset;
     }
 
 

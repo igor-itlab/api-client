@@ -26,6 +26,11 @@ class MiccNetwork
     /**
      * @var string|null
      */
+    protected $token;
+
+    /**
+     * @var string|null
+     */
     protected $type;
 
     /**
@@ -133,5 +138,21 @@ class MiccNetwork
         $this->id = $id;
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param string|null $token
+     */
+    public function setToken(?string $token): void
+    {
+        $this->token = $token;
     }
 }
